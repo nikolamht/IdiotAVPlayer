@@ -29,14 +29,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback
-                    error:nil];
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
-    myPlayer = [[IdiotPlayer alloc] initWithUrl:@"http://58.222.46.85/v.cctv.com/flash/mp4video6/TMS/2011/01/05/cf752b1c12ce452b3040cab2f90bc265_h264818000nero_aac32-1.mp4"];
+    myPlayer = [[IdiotPlayer alloc] initWithUrl:@"http://121.40.229.16:8083/data//resources/course/101140/audio/step1509608551851_audio.mp3"];
     myPlayer.delegate = self;
-    AVPlayerLayer * playerLayer = [AVPlayerLayer playerLayerWithPlayer:myPlayer.player];
-    playerLayer.frame = self.view.bounds;
-    [self.view.layer addSublayer:playerLayer];
+//    AVPlayerLayer * playerLayer = [AVPlayerLayer playerLayerWithPlayer:myPlayer.player];
+//    playerLayer.frame = self.view.bounds;
+//    [self.view.layer addSublayer:playerLayer];
     
     [myPlayer.player play];
     
@@ -54,36 +54,6 @@
     slider3 = [[IdiotSlider alloc] initWithFrame:CGRectMake(15, 500, self.view.bounds.size.width-30, 5)];
     [self.view addSubview:slider3];
     
-    
-    
-//    NSURL * url = [NSURL URLWithString:@"idiot://58.222.46.85/v.cctv.com/flash/mp4video6/TMS/2011/01/05/cf752b1c12ce452b3040cab2f90bc265_h264818000nero_aac32-1.mp4"];
-//    
-//    NSFileHandle * read = [NSFileHandle fileHandleForReadingAtPath:[[[FileManager getCacheDirectoryWithUrl:url] stringByAppendingString:@"/"] stringByAppendingString:@"0-18584541.idiot"]];
-//    //1
-//    [read seekToFileOffset:10000];
-//    
-//    NSString * path = [FileManager createSliceWithUrl:url sliceName:@"10000-18584541"];
-//    
-//    NSFileHandle * write = [FileManager fileHandleForWritingAtPath:path];
-//    
-//    [write writeData:[read readDataOfLength:1000000]];
-//    
-//    [write synchronizeFile];
-//    [write closeFile];
-//    //2
-//    [read seekToFileOffset:2000000];
-//    
-//    NSString * path2 = [FileManager createSliceWithUrl:url sliceName:@"2000000-18584541"];
-//    
-//    NSFileHandle * write2 = [FileManager fileHandleForWritingAtPath:path2];
-//    
-//    [write2 writeData:[read readDataOfLength:4000000]];
-//    
-//    [write2 synchronizeFile];
-//    [write2 closeFile];
-//    
-//    [read closeFile];
-    
 }
 
 - (void)sliderValueChanged:(UISlider *)slyder{
@@ -93,13 +63,12 @@
 #pragma mark - IdiotPlayerDelegate
 
 - (void)didIdiotStateChange:(IdiotPlayer *__weak)idiotPlayer{
-    NSLog(@"playerState %zd",idiotPlayer.playerState);
+    DLogDebug(@"playerState %zd",idiotPlayer.playerState);
 }
 
 - (void)didIdiotProgressChange:(IdiotPlayer *__weak)idiotPlayer{
     [slider setValue:idiotPlayer.progress animated:YES];
-    
-    NSLog(@"progress %f",idiotPlayer.progress);
+    DLogDebug(@"progress %f",idiotPlayer.progress);
 }
 
 - (void)didIdiotloadedTimeRangesChange:(IdiotPlayer *__weak)idiotPlayer{

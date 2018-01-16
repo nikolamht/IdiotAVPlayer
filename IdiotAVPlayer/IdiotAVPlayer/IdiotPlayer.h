@@ -29,6 +29,13 @@ typedef NS_ENUM(NSInteger, IdiotPlayerState) {
 - (void)didIdiotloadedTimeRangesChange:(IdiotPlayer *__weak)idiotPlayer;
 - (void)didIdiotCacheProgressChange:(IdiotPlayer *__weak)idiotPlayer caches:(NSArray *)cacheList;
 
+- (void)idiotAppWillResignActive:(IdiotPlayer *__weak)idiotPlayer;
+- (void)idiotAppDidEnterBackground:(IdiotPlayer *__weak)idiotPlayer;
+- (void)idiotAppWillEnterForeground:(IdiotPlayer *__weak)idiotPlayer;
+- (void)idiotAppDidBecomeActive:(IdiotPlayer *__weak)idiotPlayer;
+- (void)idiotAppDidInterrepted:(IdiotPlayer *__weak)idiotPlayer;
+- (void)idiotAppDidInterreptionEnded:(IdiotPlayer *__weak)idiotPlayer;
+
 @end
 
 @interface IdiotPlayer : NSObject
@@ -41,6 +48,10 @@ typedef NS_ENUM(NSInteger, IdiotPlayerState) {
 @property(nonatomic , assign) CGFloat duration;
 
 - (instancetype)initWithUrl:(NSString *)url;
+
+- (void)play;
+- (void)pause;
 - (void)seekToTime:(CGFloat)time;
+
 
 @end

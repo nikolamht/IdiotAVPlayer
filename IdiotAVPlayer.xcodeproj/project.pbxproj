@@ -25,6 +25,9 @@
 		1A870A391FF8B69B00F5F10D /* IdiotPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A381FF8B69B00F5F10D /* IdiotPlayer.m */; };
 		1A870A3C1FF8E5D800F5F10D /* IdiotSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A3B1FF8E5D800F5F10D /* IdiotSlider.m */; };
 		1AF31AEF2008948C00C7030D /* ResourceTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF31AEE2008948C00C7030D /* ResourceTask.m */; };
+		90BC0019C6D0E751D462873F /* libPods-IdiotAVPlayerUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E64A30F010DFE756E1D714C0 /* libPods-IdiotAVPlayerUITests.a */; };
+		D7A0E91804660BF6960E2F95 /* libPods-IdiotAVPlayerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C253CDFEB7A7E4D8F05E7D /* libPods-IdiotAVPlayerTests.a */; };
+		F4143D55A293A0F86625FA7C /* libPods-IdiotAVPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C7C4ACBDE6F96CC53289A20 /* libPods-IdiotAVPlayer.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A4298A8200DB07700A3D3E5 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		1A71C0252003538700AB2ADE /* Resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Resource.h; sourceTree = "<group>"; };
 		1A71C0262003538700AB2ADE /* Resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Resource.m; sourceTree = "<group>"; };
 		1A8709DA1FF74E3400F5F10D /* IdiotAVPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IdiotAVPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,6 +85,15 @@
 		1A870A3B1FF8E5D800F5F10D /* IdiotSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdiotSlider.m; sourceTree = "<group>"; };
 		1AF31AED2008948C00C7030D /* ResourceTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceTask.h; sourceTree = "<group>"; };
 		1AF31AEE2008948C00C7030D /* ResourceTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResourceTask.m; sourceTree = "<group>"; };
+		3C7C4ACBDE6F96CC53289A20 /* libPods-IdiotAVPlayer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IdiotAVPlayer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5DAC18E2B10271A7FF37A736 /* Pods-IdiotAVPlayerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IdiotAVPlayerUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IdiotAVPlayerUITests/Pods-IdiotAVPlayerUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		628093C0910BBEEEC824AE3E /* Pods-IdiotAVPlayer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IdiotAVPlayer.release.xcconfig"; path = "Pods/Target Support Files/Pods-IdiotAVPlayer/Pods-IdiotAVPlayer.release.xcconfig"; sourceTree = "<group>"; };
+		678F260E45DB15AB09869A5B /* Pods-IdiotAVPlayerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IdiotAVPlayerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IdiotAVPlayerTests/Pods-IdiotAVPlayerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		85159CC3B36D82F069A19E9D /* Pods-IdiotAVPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IdiotAVPlayer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IdiotAVPlayer/Pods-IdiotAVPlayer.debug.xcconfig"; sourceTree = "<group>"; };
+		B8FDAF08B0480AE5C62762F5 /* Pods-IdiotAVPlayerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IdiotAVPlayerUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IdiotAVPlayerUITests/Pods-IdiotAVPlayerUITests.release.xcconfig"; sourceTree = "<group>"; };
+		E64A30F010DFE756E1D714C0 /* libPods-IdiotAVPlayerUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IdiotAVPlayerUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC062B036FE33FCE087D0674 /* Pods-IdiotAVPlayerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IdiotAVPlayerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IdiotAVPlayerTests/Pods-IdiotAVPlayerTests.release.xcconfig"; sourceTree = "<group>"; };
+		F4C253CDFEB7A7E4D8F05E7D /* libPods-IdiotAVPlayerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IdiotAVPlayerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4143D55A293A0F86625FA7C /* libPods-IdiotAVPlayer.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7A0E91804660BF6960E2F95 /* libPods-IdiotAVPlayerTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +117,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90BC0019C6D0E751D462873F /* libPods-IdiotAVPlayerUITests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +131,8 @@
 				1A8709F61FF74E3400F5F10D /* IdiotAVPlayerTests */,
 				1A870A011FF74E3400F5F10D /* IdiotAVPlayerUITests */,
 				1A8709DB1FF74E3400F5F10D /* Products */,
+				7ED8F6A105E322C2019D1AB0 /* Pods */,
+				43D0D1E919126C2A1113126D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -132,14 +150,15 @@
 			isa = PBXGroup;
 			children = (
 				1A870A101FF74E7800F5F10D /* IdiotAVPlayer */,
-				1A8709E01FF74E3400F5F10D /* AppDelegate.h */,
-				1A8709E11FF74E3400F5F10D /* AppDelegate.m */,
 				1A8709E31FF74E3400F5F10D /* ViewController.h */,
 				1A8709E41FF74E3400F5F10D /* ViewController.m */,
+				1A8709E01FF74E3400F5F10D /* AppDelegate.h */,
+				1A8709E11FF74E3400F5F10D /* AppDelegate.m */,
 				1A8709E61FF74E3400F5F10D /* Main.storyboard */,
 				1A8709E91FF74E3400F5F10D /* Assets.xcassets */,
 				1A8709EB1FF74E3400F5F10D /* LaunchScreen.storyboard */,
 				1A8709EE1FF74E3400F5F10D /* Info.plist */,
+				1A4298A8200DB07700A3D3E5 /* PrefixHeader.pch */,
 				1A8709DD1FF74E3400F5F10D /* Supporting Files */,
 			);
 			path = IdiotAVPlayer;
@@ -206,6 +225,29 @@
 			path = Category;
 			sourceTree = "<group>";
 		};
+		43D0D1E919126C2A1113126D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3C7C4ACBDE6F96CC53289A20 /* libPods-IdiotAVPlayer.a */,
+				F4C253CDFEB7A7E4D8F05E7D /* libPods-IdiotAVPlayerTests.a */,
+				E64A30F010DFE756E1D714C0 /* libPods-IdiotAVPlayerUITests.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7ED8F6A105E322C2019D1AB0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				85159CC3B36D82F069A19E9D /* Pods-IdiotAVPlayer.debug.xcconfig */,
+				628093C0910BBEEEC824AE3E /* Pods-IdiotAVPlayer.release.xcconfig */,
+				678F260E45DB15AB09869A5B /* Pods-IdiotAVPlayerTests.debug.xcconfig */,
+				EC062B036FE33FCE087D0674 /* Pods-IdiotAVPlayerTests.release.xcconfig */,
+				5DAC18E2B10271A7FF37A736 /* Pods-IdiotAVPlayerUITests.debug.xcconfig */,
+				B8FDAF08B0480AE5C62762F5 /* Pods-IdiotAVPlayerUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -213,9 +255,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1A870A071FF74E3400F5F10D /* Build configuration list for PBXNativeTarget "IdiotAVPlayer" */;
 			buildPhases = (
+				BDFCDC8AE67CBFAFB3D6F504 /* [CP] Check Pods Manifest.lock */,
 				1A8709D61FF74E3400F5F10D /* Sources */,
 				1A8709D71FF74E3400F5F10D /* Frameworks */,
 				1A8709D81FF74E3400F5F10D /* Resources */,
+				13DF01A98247B17B7652BC12 /* [CP] Embed Pods Frameworks */,
+				13B2DD1A151080B1EC0D3CF9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -230,9 +275,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1A870A0A1FF74E3400F5F10D /* Build configuration list for PBXNativeTarget "IdiotAVPlayerTests" */;
 			buildPhases = (
+				EB9668A0C4B03C9214EC2C6B /* [CP] Check Pods Manifest.lock */,
 				1A8709EF1FF74E3400F5F10D /* Sources */,
 				1A8709F01FF74E3400F5F10D /* Frameworks */,
 				1A8709F11FF74E3400F5F10D /* Resources */,
+				4B6CDFC0212400F9060D26E1 /* [CP] Embed Pods Frameworks */,
+				43B9F23F3CA2A77D39106FD3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -248,9 +296,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1A870A0D1FF74E3400F5F10D /* Build configuration list for PBXNativeTarget "IdiotAVPlayerUITests" */;
 			buildPhases = (
+				D85DDC2D20A13D40CEC00932 /* [CP] Check Pods Manifest.lock */,
 				1A8709FA1FF74E3400F5F10D /* Sources */,
 				1A8709FB1FF74E3400F5F10D /* Frameworks */,
 				1A8709FC1FF74E3400F5F10D /* Resources */,
+				5E406230405651E7BAC83EEF /* [CP] Embed Pods Frameworks */,
+				CE55EE47BF5F6450B0709FBC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -268,11 +319,17 @@
 		1A8709D21FF74E3400F5F10D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = mht;
 				TargetAttributes = {
 					1A8709D91FF74E3400F5F10D = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = QG8KTU8ETB;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					1A8709F21FF74E3400F5F10D = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -330,6 +387,144 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		13B2DD1A151080B1EC0D3CF9 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IdiotAVPlayer/Pods-IdiotAVPlayer-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		13DF01A98247B17B7652BC12 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IdiotAVPlayer/Pods-IdiotAVPlayer-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		43B9F23F3CA2A77D39106FD3 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IdiotAVPlayerTests/Pods-IdiotAVPlayerTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4B6CDFC0212400F9060D26E1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IdiotAVPlayerTests/Pods-IdiotAVPlayerTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5E406230405651E7BAC83EEF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IdiotAVPlayerUITests/Pods-IdiotAVPlayerUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BDFCDC8AE67CBFAFB3D6F504 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		CE55EE47BF5F6450B0709FBC /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IdiotAVPlayerUITests/Pods-IdiotAVPlayerUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D85DDC2D20A13D40CEC00932 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		EB9668A0C4B03C9214EC2C6B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1A8709D61FF74E3400F5F10D /* Sources */ = {
@@ -417,8 +612,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -430,6 +627,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/IdiotAVPlayer/PrefixHeader.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -440,7 +638,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -461,8 +659,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -472,13 +672,14 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/IdiotAVPlayer/PrefixHeader.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -487,10 +688,12 @@
 		};
 		1A870A081FF74E3400F5F10D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 85159CC3B36D82F069A19E9D /* Pods-IdiotAVPlayer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = QG8KTU8ETB;
 				INFOPLIST_FILE = IdiotAVPlayer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = miaoht.IdiotAVPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -499,10 +702,12 @@
 		};
 		1A870A091FF74E3400F5F10D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 628093C0910BBEEEC824AE3E /* Pods-IdiotAVPlayer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = QG8KTU8ETB;
 				INFOPLIST_FILE = IdiotAVPlayer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = miaoht.IdiotAVPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -511,6 +716,7 @@
 		};
 		1A870A0B1FF74E3400F5F10D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 678F260E45DB15AB09869A5B /* Pods-IdiotAVPlayerTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = IdiotAVPlayerTests/Info.plist;
@@ -523,6 +729,7 @@
 		};
 		1A870A0C1FF74E3400F5F10D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EC062B036FE33FCE087D0674 /* Pods-IdiotAVPlayerTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = IdiotAVPlayerTests/Info.plist;
@@ -535,6 +742,7 @@
 		};
 		1A870A0E1FF74E3400F5F10D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5DAC18E2B10271A7FF37A736 /* Pods-IdiotAVPlayerUITests.debug.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = IdiotAVPlayerUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -546,6 +754,7 @@
 		};
 		1A870A0F1FF74E3400F5F10D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B8FDAF08B0480AE5C62762F5 /* Pods-IdiotAVPlayerUITests.release.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = IdiotAVPlayerUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

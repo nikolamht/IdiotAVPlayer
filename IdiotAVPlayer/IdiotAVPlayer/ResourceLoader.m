@@ -171,7 +171,7 @@
     task.loadingRequest.contentInformationRequest.contentLength = task.resource.fileLength;
     
     if (task.resource.fileLength <= 0) {
-        NSLog(@"error requestTask.fileLength <= 0");
+        DLogDebug(@"requestTask.fileLength <= 0");
     }
     
     //读文件，填充数据

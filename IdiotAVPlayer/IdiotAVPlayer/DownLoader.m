@@ -115,14 +115,32 @@ static NSString * Content_Range = @"Content-Range";
     
 }
 
+#pragma mark -
+- (NSURLSession *)session{
+    if (!_session) {//创建支持后台的NSURLSession
+        NSURLSessionConfiguration * configure = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:IdiotBackgroundTaskId];
+        _session = [NSURLSession sessionWithConfiguration:configure delegate:self delegateQueue:self.queue];
+    }
+    return _session;
+}
+
+- (NSOperationQueue *)queue{
+    if (_queue) {
+        _queue = [[NSOperationQueue alloc] init];
+        _queue.maxConcurrentOperationCount = 1;
+    }
+    return _queue;
+}
+
+#pragma mark - 获取资源
 - (void)fetchDataWith:(Resource *)sliceRequest Resource:(Resource *)resource {
     switch (resource.resourceType) {
-        case ResourceTypeNet:
+            case ResourceTypeNet:
         {
             [self fetchFromNetwork:sliceRequest withResource:resource];
         } break;
             
-        case ResourceTypeLocal:
+            case ResourceTypeLocal:
         {
             [self fetchFromLocal:sliceRequest withResource:resource];
         } break;
@@ -132,22 +150,21 @@ static NSString * Content_Range = @"Content-Range";
     }
 }
 
-#pragma mark - 获取网络资源
 - (void)fetchFromNetwork:(Resource *)sliceRequest withResource:(Resource *)resource{
     
     NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[resource.requestURL originalSchemeURL] cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:10];
     if (resource.cacheLength > 0) {
-        [request addValue:[NSString stringWithFormat:@"bytes=%ld-%ld", resource.requestOffset, resource.requestOffset+resource.cacheLength-1] forHTTPHeaderField:@"Range"];
+        [request addValue:[NSString stringWithFormat:@"bytes=%lld-%lld", resource.requestOffset, resource.requestOffset+resource.cacheLength-1] forHTTPHeaderField:@"Range"];
     }else{
-        [request addValue:[NSString stringWithFormat:@"bytes=%ld-", resource.requestOffset] forHTTPHeaderField:@"Range"];
+        [request addValue:[NSString stringWithFormat:@"bytes=%lld-", resource.requestOffset] forHTTPHeaderField:@"Range"];
     }
     NSURLSessionDataTask * task = [self.session dataTaskWithRequest:request];
-    task.taskDescription = [NSString stringWithFormat:@"%zd",sliceRequest.requestOffset];
+    task.taskDescription = [NSString stringWithFormat:@"%lld",sliceRequest.requestOffset];
     [task resume];
     
     self.currentDataTask = task;
 }
-#pragma mark - 获取本地资源
+
 - (void)fetchFromLocal:(Resource *)sliceRequest withResource:(Resource *)resource{
     
     if (sliceRequest.requestOffset == resource.requestOffset) {
@@ -168,13 +185,13 @@ static NSString * Content_Range = @"Content-Range";
     
     NSFileHandle * readHandle = [FileManager fileHandleForReadingAtPath:resource.cachePath];
     
-    NSInteger seekOffset = sliceRequest.requestOffset < resource.requestOffset?0:sliceRequest.requestOffset-resource.requestOffset;
+    unsigned long long seekOffset = sliceRequest.requestOffset < resource.requestOffset?0:sliceRequest.requestOffset-resource.requestOffset;
     
     [readHandle seekToFileOffset:seekOffset];
     
     //文件过大可分次读取
-    NSInteger canReadLength = resource.cacheLength-seekOffset;
-    NSInteger bufferLength = 5242880; //长度大于5M分次返回数据
+    NSUInteger canReadLength = resource.cacheLength-seekOffset;
+    NSUInteger bufferLength = 5242880; //长度大于5M分次返回数据
     
     while (canReadLength >= bufferLength) {//长度大于1M分次返回数据
         
@@ -199,50 +216,6 @@ static NSString * Content_Range = @"Content-Range";
     
 }
 
-#pragma mark -
-- (NSURLSession *)session{
-    if (!_session) {//创建支持后台的NSURLSession
-        if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
-            NSURLSessionConfiguration * configure = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:IdiotBackgroundTaskId];
-            _session = [NSURLSession sessionWithConfiguration:configure delegate:self delegateQueue:self.queue];
-        }else{
-            NSURLSessionConfiguration * configure = [NSURLSessionConfiguration backgroundSessionConfiguration:IdiotBackgroundTaskId];
-            _session = [NSURLSession sessionWithConfiguration:configure delegate:self delegateQueue:self.queue];
-        }
-    }
-    return _session;
-}
-
-- (NSOperationQueue *)queue{
-    if (_queue) {
-        _queue = [[NSOperationQueue alloc] init];
-        _queue.maxConcurrentOperationCount = 1;
-    }
-    return _queue;
-}
-
-#pragma mark - 下一个资源
-- (void)willNextResource:(Resource *)task {
-    
-    if (!self.resources.count||!_currentResource) {
-        return;
-    }
-    
-    NSInteger index = [self.resources indexOfObject:_currentResource];
-    
-    if (index >= self.resources.count - 1) {
-        return;
-    }
-    
-    Resource * resource = [self.resources objectAtIndex:++index];
-    
-    self.currentResource = resource;
-    
-    [self fetchDataWith:task Resource:self.currentResource];
-    
-}
-
-#pragma mark - 本地数据返回
 - (void)didReceiveLocalData:(NSData *)data requestTask:(Resource *)task complete:(BOOL)complete {
     
     if (task.cancel) return;
@@ -271,6 +244,26 @@ static NSString * Content_Range = @"Content-Range";
     
 }
 
+- (void)willNextResource:(Resource *)task {
+    
+    if (!self.resources.count||!_currentResource) {
+        return;
+    }
+    
+    NSInteger index = [self.resources indexOfObject:_currentResource];
+    
+    if (index >= self.resources.count - 1) {
+        return;
+    }
+    
+    Resource * resource = [self.resources objectAtIndex:++index];
+    
+    self.currentResource = resource;
+    
+    [self fetchDataWith:task Resource:self.currentResource];
+    
+}
+
 #pragma mark - NSURLSessionDataDelegate
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     
@@ -284,7 +277,7 @@ static NSString * Content_Range = @"Content-Range";
     task.fileLength = fileLength.integerValue > 0 ? fileLength.integerValue : response.expectedContentLength;
     
     if (!task.cachePath.length) {
-        task.cachePath = [FileManager createSliceWithUrl:task.requestURL sliceName:[NSString stringWithFormat:@"%zd-%zd",task.requestOffset,task.fileLength]];
+        task.cachePath = [FileManager createSliceWithUrl:task.requestURL sliceName:[NSString stringWithFormat:@"%lld-%lld",task.requestOffset,task.fileLength]];
     }
     
     completionHandler(NSURLSessionResponseAllow);
@@ -310,6 +303,7 @@ static NSString * Content_Range = @"Content-Range";
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(didReceiveData:)]) {
         [self.delegate didReceiveData:self];
+        DLogInfo(@"接受到数据");
     }
 }
 
@@ -319,17 +313,21 @@ static NSString * Content_Range = @"Content-Range";
     Resource * datatask = [self.taskDic objectForKey:task.taskDescription];
     
     if (datatask.cancel) {
-//        NSLog(@"下载取消");
+        DLogDebug(@"下载取消");
     }else {
         
         if (!error) {
-            //开始下一个资源获取
+            
+            DLogDebug(@"开始下一个资源获取");
             [self willNextResource:datatask];
+            
+        }else{
+            DLogError(@"%@",error);
         }
         
     }
     
-    NSLog(@"didCompleteWithError");
+    DLogDebug(@"didCompleteWithError");
 }
 
 //最终处理

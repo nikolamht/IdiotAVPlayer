@@ -6,6 +6,7 @@
 //  Copyright © 2017年 mht. All rights reserved.
 //
 #import <AVFoundation/AVFoundation.h>
+#import <UIKit/UIKit.h>
 
 #import "IdiotPlayer.h"
 #import "ResourceLoader.h"
@@ -13,14 +14,14 @@
 
 @interface IdiotPlayer () <ResourceLoaderCacheProgressDelegate>
 
-@property(nonatomic , strong)NSURL * currentUrl;
-@property(nonatomic , strong)ResourceLoader * resourceLoader;
-@property(nonatomic , strong)dispatch_queue_t queue;
-@property(nonatomic , strong)AVURLAsset * playerAsset;
-@property(nonatomic , strong)AVPlayerItem * playerItem;
-@property(nonatomic , strong)AVPlayer * player;
-@property(nonatomic , assign)id timeObserver;
-@property(nonatomic , assign)CGFloat progress;
+@property(nonatomic , strong) NSURL * currentUrl;
+@property(nonatomic , strong) ResourceLoader * resourceLoader;
+@property(nonatomic , strong) dispatch_queue_t queue;
+@property(nonatomic , strong) AVURLAsset * playerAsset;
+@property(nonatomic , strong) AVPlayerItem * playerItem;
+@property(nonatomic , strong) AVPlayer * player;
+@property(nonatomic , assign) id timeObserver;
+@property(nonatomic , assign) CGFloat progress;
 
 @property(nonatomic , assign)IdiotPlayerState playerState;
 @end
@@ -61,7 +62,23 @@
     
     [_player addObserver:self forKeyPath:@"rate" options:NSKeyValueObservingOptionNew context:nil];
     
+    //播放完成通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didPlayBackEnd) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+    
+    //即将进入后台
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
+    
+    //进入后台
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackground) name: UIApplicationDidEnterBackgroundNotification object:nil];
+    
+    //即将进入前台
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name: UIApplicationWillEnterForegroundNotification object:nil];
+    
+    //激活
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidBecomeActive) name: UIApplicationDidBecomeActiveNotification object:nil];
+    
+    //中断事件
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidInterrepted:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
     
     [_playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
     [_playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
@@ -95,6 +112,12 @@
     }
 }
 
+- (void)pause{
+    if (_player) {
+        [_player pause];
+    }
+}
+
 - (void)seekToTime:(CGFloat)time{
     
     [self.player pause];
@@ -110,6 +133,79 @@
 - (CGFloat)duration{
     _duration = CMTimeGetSeconds(_playerItem.duration);
     return _duration;
+}
+
+- (double)currentTime{
+    return self.player.currentTime.value/self.player.currentTime.timescale;
+}
+
+- (void)didPlayBackEnd{
+    _playerState = IdiotPlayerStateStopped;
+    if (_delegate&&[_delegate respondsToSelector:@selector(didIdiotStateChange:)]) {
+        [_delegate didIdiotStateChange:self];
+    }
+}
+
+- (void)appWillResignActive {
+    DLogDebug(@"即将进入后台");
+    if (_delegate&&[_delegate respondsToSelector:@selector(idiotAppWillResignActive:)]) {
+        [_delegate idiotAppWillResignActive:self];
+    }
+}
+
+- (void)appDidEnterBackground {
+    DLogDebug(@"已经进入后台");
+    if (_delegate&&[_delegate respondsToSelector:@selector(idiotAppDidEnterBackground:)]) {
+        [_delegate idiotAppDidEnterBackground:self];
+    }
+}
+
+- (void)appWillEnterForeground {
+    DLogDebug(@"即将进入前台");
+    if (_delegate&&[_delegate respondsToSelector:@selector(idiotAppWillEnterForeground:)]) {
+        [_delegate idiotAppWillEnterForeground:self];
+    }
+}
+
+- (void)appDidBecomeActive {
+    DLogDebug(@"已经变为活动");
+    if (_delegate&&[_delegate respondsToSelector:@selector(idiotAppDidBecomeActive:)]) {
+        [_delegate idiotAppDidBecomeActive:self];
+    }
+}
+
+- (void)appDidInterrepted:(NSNotification *)notification{
+    
+    if (AVAudioSessionInterruptionTypeBegan == [notification.userInfo[AVAudioSessionInterruptionTypeKey] unsignedIntegerValue])
+    {
+        DLogDebug(@"打断事件");
+        if (_delegate&&[_delegate respondsToSelector:@selector(idiotAppDidInterrepted:)]) {
+            [_delegate idiotAppDidInterrepted:self];
+        }else{
+            [self pause];
+        }
+    } else if (AVAudioSessionInterruptionTypeEnded == [notification.userInfo[AVAudioSessionInterruptionTypeKey] unsignedIntegerValue])
+    {
+        DLogDebug(@"打断事件结束");
+        if (_delegate&&[_delegate respondsToSelector:@selector(idiotAppDidInterreptionEnded:)]) {
+            [_delegate idiotAppDidInterreptionEnded:self];
+        }else{
+            [self play];
+        }
+    }
+    
+}
+
+/*
+ 返回可读区域
+ */
+- (NSTimeInterval)availableDuration{
+    NSArray * loadedTimeRanges = [[self.player currentItem] loadedTimeRanges];
+    CMTimeRange timeRange = [loadedTimeRanges.firstObject CMTimeRangeValue];//获取缓冲区域
+    Float64 startSeconds = CMTimeGetSeconds(timeRange.start);
+    Float64 durationSeconds = CMTimeGetSeconds(timeRange.duration);
+    NSTimeInterval result = startSeconds + durationSeconds;// 计算缓冲总进度
+    return result;
 }
 
 #pragma mark - observe
@@ -176,7 +272,7 @@
         
         if ([keyPath isEqualToString:@"playbackBufferEmpty"])
         {
-            NSLog(@"playbackBufferEmpty");
+            DLogDebug(@"playbackBufferEmpty");
             _playerState = IdiotPlayerStateBuffering;
             if ([_delegate respondsToSelector:@selector(didIdiotStateChange:)])
             {
@@ -206,28 +302,6 @@
     
 }
 
-
-
-- (void)didPlayBackEnd{
-    _playerState = IdiotPlayerStateStopped;
-}
-
-/**
- *  返回 视频缓存可读时长
- */
-- (NSTimeInterval)availableDuration{
-    NSArray * loadedTimeRanges = [[self.player currentItem] loadedTimeRanges];
-    CMTimeRange timeRange = [loadedTimeRanges.firstObject CMTimeRangeValue];// 获取缓冲区域
-    Float64 startSeconds = CMTimeGetSeconds(timeRange.start);
-    Float64 durationSeconds = CMTimeGetSeconds(timeRange.duration);
-    NSTimeInterval result = startSeconds + durationSeconds;// 计算缓冲总进度
-    return result;
-}
-
-- (double)currentTime{
-    return self.player.currentTime.value/self.player.currentTime.timescale;
-}
-
 #pragma mark - ResourceLoaderCacheProgressDelegate
 - (void)didCacheProgressChange:(NSArray *)cacheProgressList{
     
@@ -237,7 +311,7 @@
     
 }
 
-#pragma mark -
+#pragma mark - dealloc
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     if (_timeObserver) {
