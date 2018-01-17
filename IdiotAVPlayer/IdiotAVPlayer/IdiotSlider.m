@@ -13,6 +13,7 @@
 @interface IdiotSlider ()
 {
     NSMutableArray * loadedLayers;
+    UISlider * slider;
 }
 
 @end
@@ -34,6 +35,18 @@
 
 - (void)setup{
     loadedLayers = [[NSMutableArray alloc] init];
+    
+    slider = [[UISlider alloc] initWithFrame:CGRectMake(0,0, self.bounds.size.width, self.bounds.size.height)];
+    slider.backgroundColor = [UIColor clearColor];
+    slider.minimumValue = 0.0;// 设置最小值
+    slider.maximumValue = 1.0;// 设置最大值
+    slider.value = 0 ;// 设置初始值
+    slider.continuous = YES;// 设置可连续变化
+    slider.minimumTrackTintColor = [UIColor clearColor]; //滑轮左边颜色，如果设置了左边的图片就不会显示
+    slider.maximumTrackTintColor = [UIColor clearColor]; //滑轮右边颜色，如果设置了右边的图片就不会显示
+    slider.thumbTintColor = [UIColor colorWithRed:114.0/255.0 green:114.0/255.0 blue:114.0/255.0 alpha:0.5];//设置了滑轮的颜色，如果设置了滑轮的样式图片就不会显示
+    [self addSubview:slider];
+    
 }
 
 - (void)setCaches:(NSArray *)caches{
@@ -144,6 +157,18 @@
         
     }
     
+}
+
+- (void)setValue:(CGFloat)value animated:(BOOL)animated {
+    [slider setValue:value animated:animated];
+}
+
+- (void)addTarget:(nullable id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents {
+    [slider addTarget:target action:action forControlEvents:controlEvents];
+}
+
+- (CGFloat)value{
+    return slider.value;
 }
 
 @end

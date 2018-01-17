@@ -10,6 +10,11 @@
 
 @interface IdiotSlider : UIView
 
-@property(nonatomic , copy) NSArray * caches;
+@property(nonatomic ,   copy) NSArray * _Nullable caches;
+@property(nonatomic , assign) CGFloat value;
+@property(nonatomic , assign) BOOL seeking;
+
+- (void)setValue:(CGFloat)value animated:(BOOL)animated;
+- (void)addTarget:(nullable id)target action:(SEL _Nonnull )action forControlEvents:(UIControlEvents)controlEvents;
 
 @end
