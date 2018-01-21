@@ -86,64 +86,57 @@
             
             CGFloat x = 0;
             
-            if (_caches.count > 1) {
+            if (resource.cacheLength == 0||resource.resourceType == ResourceTypeTask) {
+                continue;
+            }
+            
+            width = ceil(self.bounds.size.width*([[NSNumber numberWithUnsignedInteger:resource.cacheLength] floatValue]/[[NSNumber numberWithUnsignedInteger:resource.fileLength] floatValue]));
+            
+            x = lastOffset == 0?ceil(self.bounds.size.width*([[NSNumber numberWithUnsignedInteger:resource.requestOffset] floatValue]/[[NSNumber numberWithUnsignedInteger:resource.fileLength] floatValue])):lastOffset;
+            
+            lastOffset += width;
+            
+            if (lastOffset > self.bounds.size.width) {
+                width -= lastOffset - self.bounds.size.width;
+            }
+            
+            if (resource.resourceType == ResourceTypeNet) {
                 
-                if (resource.cacheLength == 0||resource.resourceType == ResourceTypeTask) {
+                NSInteger currentOffset = task.requestOffset + task.cacheLength;
+                
+                if (resource.requestOffset >= task.requestOffset&&
+                    resource.requestOffset <  currentOffset&&
+                    currentOffset <  resource.requestOffset+resource.cacheLength) {
+                    
+                    CGFloat scale = [[NSNumber numberWithUnsignedInteger:(currentOffset-resource.requestOffset)] floatValue]/[[NSNumber numberWithUnsignedInteger:(resource.cacheLength)] floatValue];
+                    
+                    CGFloat currentWidth = ceil(width*scale);
+                    width = MIN(currentWidth, width);
+                    
+                }else if (resource.requestOffset >= task.requestOffset&&
+                          currentOffset >= resource.requestOffset+resource.cacheLength) {
+                    
+                }else if (resource.requestOffset < task.requestOffset&&
+                          currentOffset < resource.requestOffset+resource.cacheLength) {
+                    
+                    NSUInteger offset = task.requestOffset - resource.requestOffset;
+                    
+                    CGFloat offsetScale = [[NSNumber numberWithUnsignedInteger:offset] floatValue]/[[NSNumber numberWithUnsignedInteger:(resource.cacheLength)] floatValue];
+                    
+                    x += ceil(offsetScale*width);
+                    
+                    CGFloat scale = [[NSNumber numberWithUnsignedInteger:(task.cacheLength)] floatValue]/[[NSNumber numberWithUnsignedInteger:(resource.cacheLength)] floatValue];
+                    
+                    CGFloat currentWidth = ceil(width*MIN(scale, 1-offsetScale));
+                    width = MIN(currentWidth, width);
+                    
+                }else if (resource.requestOffset < task.requestOffset&&
+                          currentOffset >= resource.requestOffset+resource.cacheLength) {
+                    continue;
+                }else{
                     continue;
                 }
                 
-                width = ceil(self.bounds.size.width*([[NSNumber numberWithUnsignedInteger:resource.cacheLength] floatValue]/[[NSNumber numberWithUnsignedInteger:resource.fileLength] floatValue]));
-                
-                x = lastOffset == 0?ceil(self.bounds.size.width*([[NSNumber numberWithUnsignedInteger:resource.requestOffset] floatValue]/[[NSNumber numberWithUnsignedInteger:resource.fileLength] floatValue])):lastOffset;
-                
-                lastOffset += width;
-                
-                if (lastOffset > self.bounds.size.width) {
-                    width -= lastOffset - self.bounds.size.width;
-                }
-                
-                if (resource.resourceType == ResourceTypeNet) {
-                    
-                    NSInteger currentOffset = task.requestOffset + task.cacheLength;
-                    
-                    if (resource.requestOffset >= task.requestOffset&&
-                        resource.requestOffset <  currentOffset&&
-                        currentOffset <  resource.requestOffset+resource.cacheLength) {
-                        
-                        CGFloat scale = [[NSNumber numberWithUnsignedInteger:(currentOffset-resource.requestOffset)] floatValue]/[[NSNumber numberWithUnsignedInteger:(resource.cacheLength)] floatValue];
-                        
-                        CGFloat currentWidth = ceil(width*scale);
-                        width = MIN(currentWidth, width);
-                        
-                    }else if (resource.requestOffset >= task.requestOffset&&
-                              currentOffset >= resource.requestOffset+resource.cacheLength) {
-                        
-                    }else if (resource.requestOffset < task.requestOffset&&
-                              currentOffset < resource.requestOffset+resource.cacheLength) {
-                        
-                        NSUInteger offset = task.requestOffset - resource.requestOffset;
-                        
-                        CGFloat offsetScale = [[NSNumber numberWithUnsignedInteger:offset] floatValue]/[[NSNumber numberWithUnsignedInteger:(resource.cacheLength)] floatValue];
-                        
-                        x += ceil(offsetScale*width);
-                        
-                        CGFloat scale = [[NSNumber numberWithUnsignedInteger:(task.cacheLength)] floatValue]/[[NSNumber numberWithUnsignedInteger:(resource.cacheLength)] floatValue];
-                        
-                        CGFloat currentWidth = ceil(width*MIN(scale, 1-offsetScale));
-                        width = MIN(currentWidth, width);
-                        
-                    }else if (resource.requestOffset < task.requestOffset&&
-                              currentOffset >= resource.requestOffset+resource.cacheLength) {
-                        continue;
-                    }else{
-                        continue;
-                    }
-                    
-                }
-            }else{
-                width = ceil(self.bounds.size.width*([[NSNumber numberWithUnsignedInteger:resource.cacheLength] floatValue]/[[NSNumber numberWithUnsignedInteger:resource.fileLength] floatValue]));
-                
-                x = 0;
             }
             
             CALayer * layer = [CALayer layer];

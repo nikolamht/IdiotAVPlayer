@@ -24,6 +24,7 @@ static NSString * Content_Range = @"Content-Range";
 @property(nonatomic , strong) NSMutableArray * resources;
 @property(nonatomic ,   weak) NSURLSessionDataTask * currentDataTask;
 @property(nonatomic ,   weak) Resource * currentResource;
+@property(nonatomic ,   weak) Resource * currentTask;
 @property(   atomic , assign) BOOL writing;
 
 @end
@@ -75,6 +76,7 @@ static NSString * Content_Range = @"Content-Range";
         resource.cachePath = task.cachePath;
         resource.cacheLength = 0;
         resource.resourceType = ResourceTypeNet;//网络资源
+        [self.resources addObject:resource];
     }else{//本地有资源
         
         for (Resource * obj in self.resources) {
@@ -88,7 +90,7 @@ static NSString * Content_Range = @"Content-Range";
         if (task.requestOffset > resource.requestOffset&&
             resource.resourceType == ResourceTypeNet) {
             
-            NSUInteger adjustCacheLength = task.requestOffset - resource.requestOffset;
+            long long adjustCacheLength = task.requestOffset - resource.requestOffset;
             
             Resource * net = [[Resource alloc] init];
             net.requestURL = task.requestURL;
@@ -114,6 +116,26 @@ static NSString * Content_Range = @"Content-Range";
     [self fetchDataWith:task Resource:self.currentResource];
     
 }
+
+- (void)cancel{
+    if (self.currentDataTask) {
+        [self.currentDataTask cancel];
+    }
+}
+
+- (void)resume{
+    if (!self.currentTask) {
+        return;
+    }
+    
+    if (self.currentTask.requestOffset+self.currentTask.cacheLength < self.currentResource.requestOffset+self.currentResource.cacheLength) {
+        [self fetchFromNetwork:self.currentTask withResource:self.currentResource];
+    }else{
+        [self willNextResource:self.currentTask];
+    }
+    
+}
+
 
 #pragma mark -
 - (NSURLSession *)session{
@@ -150,19 +172,19 @@ static NSString * Content_Range = @"Content-Range";
     }
 }
 
-- (void)fetchFromNetwork:(Resource *)sliceRequest withResource:(Resource *)resource{
+- (void)fetchFromNetwork:(Resource *)task withResource:(Resource *)resource{
     
     NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[resource.requestURL originalSchemeURL] cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:10];
     if (resource.cacheLength > 0) {
-        [request addValue:[NSString stringWithFormat:@"bytes=%lld-%lld", resource.requestOffset, resource.requestOffset+resource.cacheLength-1] forHTTPHeaderField:@"Range"];
+        [request addValue:[NSString stringWithFormat:@"bytes=%lld-%lld", MAX(resource.requestOffset, task.requestOffset + task.cacheLength), resource.requestOffset+resource.cacheLength-1] forHTTPHeaderField:@"Range"];
     }else{
         [request addValue:[NSString stringWithFormat:@"bytes=%lld-", resource.requestOffset] forHTTPHeaderField:@"Range"];
     }
-    NSURLSessionDataTask * task = [self.session dataTaskWithRequest:request];
-    task.taskDescription = [NSString stringWithFormat:@"%lld",sliceRequest.requestOffset];
-    [task resume];
+    NSURLSessionDataTask * datatask = [self.session dataTaskWithRequest:request];
+    datatask.taskDescription = [NSString stringWithFormat:@"%lld",task.requestOffset];
+    [datatask resume];
     
-    self.currentDataTask = task;
+    self.currentDataTask = datatask;
 }
 
 - (void)fetchFromLocal:(Resource *)sliceRequest withResource:(Resource *)resource{
@@ -190,7 +212,7 @@ static NSString * Content_Range = @"Content-Range";
     [readHandle seekToFileOffset:seekOffset];
     
     //文件过大可分次读取
-    NSUInteger canReadLength = resource.cacheLength-seekOffset;
+    long long canReadLength = resource.cacheLength-seekOffset;
     NSUInteger bufferLength = 5242880; //长度大于5M分次返回数据
     
     while (canReadLength >= bufferLength) {//长度大于1M分次返回数据
@@ -204,15 +226,13 @@ static NSString * Content_Range = @"Content-Range";
     }
     
     if (canReadLength != 0) {
-        NSData * responseData = [readHandle readDataOfLength:canReadLength];
+        NSData * responseData = [readHandle readDataOfLength:[[NSNumber numberWithLongLong:canReadLength] unsignedIntegerValue]];
         [readHandle closeFile];
         
         [self didReceiveLocalData:responseData requestTask:sliceRequest complete:YES];
     }else{
         [readHandle closeFile];
     }
-    
-    [[NSFileManager defaultManager] removeItemAtPath:resource.cachePath error:nil];
     
 }
 
@@ -271,13 +291,23 @@ static NSString * Content_Range = @"Content-Range";
     
     if (task.cancel) return;
     
-    NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-    NSString * contentRange = [[httpResponse allHeaderFields] objectForKey:@"Content-Range"];
-    NSString * fileLength = [[contentRange componentsSeparatedByString:@"/"] lastObject];
-    task.fileLength = fileLength.integerValue > 0 ? fileLength.integerValue : response.expectedContentLength;
+    if (task.fileLength <= 0) {
+        NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
+        NSString * contentRange = [[httpResponse allHeaderFields] objectForKey:@"Content-Range"];
+        NSString * fileLength = [[contentRange componentsSeparatedByString:@"/"] lastObject];
+        task.fileLength = fileLength.integerValue > 0 ? fileLength.integerValue : response.expectedContentLength;
+    }
+    
+    if (self.currentResource.fileLength <= 0) {
+        self.currentResource.fileLength = task.fileLength;
+    }
     
     if (!task.cachePath.length) {
         task.cachePath = [FileManager createSliceWithUrl:task.requestURL sliceName:[NSString stringWithFormat:@"%lld-%lld",task.requestOffset,task.fileLength]];
+    }
+    
+    if (self.currentResource.cacheLength <= 0) {
+        self.currentResource.cacheLength = task.fileLength - task.requestOffset;
     }
     
     completionHandler(NSURLSessionResponseAllow);
@@ -323,6 +353,11 @@ static NSString * Content_Range = @"Content-Range";
             
         }else{
             DLogError(@"%@",error);
+            
+            if (error.code == -997) {//Lost connection to background transfer service
+                self.currentTask = datatask;
+            }
+            
         }
         
     }

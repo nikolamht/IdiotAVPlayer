@@ -20,5 +20,6 @@
 
 @property(nonatomic , weak) id<ResourceLoaderCacheProgressDelegate> delegate;
 @property(nonatomic , assign) BOOL seek;
+- (void)stopResourceLoader;
 
 @end

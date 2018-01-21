@@ -43,6 +43,8 @@
     
     [self addLoadingRequest:loadingRequest];
     
+    DLogDebug(@"loadingRequest == %@",loadingRequest)
+    
     return YES;
 }
 
@@ -114,7 +116,7 @@
 
 - (void)newTaskWithLoadingRequest:(AVAssetResourceLoadingRequest *)loadingRequest {
     
-    NSUInteger fileLength = 0;
+    long long fileLength = 0;
     
     if (self.currentResource) {
         fileLength = self.currentResource.fileLength;
@@ -143,6 +145,10 @@
     [[DownLoader share] start:self.currentResource];
     
     self.seek = NO;
+}
+
+- (void)stopResourceLoader{
+    [[DownLoader share] cancel];
 }
 
 - (void)processRequestList {
@@ -175,8 +181,8 @@
     }
     
     //读文件，填充数据
-    NSUInteger cacheLength = task.resource.cacheLength;
-    NSUInteger requestedOffset = task.loadingRequest.dataRequest.requestedOffset;
+    long long cacheLength = task.resource.cacheLength;
+    long long requestedOffset = task.loadingRequest.dataRequest.requestedOffset;
     if (task.loadingRequest.dataRequest.currentOffset != 0) {
         requestedOffset = task.loadingRequest.dataRequest.currentOffset;
     }
@@ -185,27 +191,27 @@
         return;
     }
     
-    NSUInteger paddingOffset = requestedOffset - task.resource.requestOffset;
+    long long paddingOffset = requestedOffset - task.resource.requestOffset;
     
-    NSUInteger canReadLength = cacheLength - paddingOffset;
+    long long canReadLength = cacheLength - paddingOffset;
     
     if (canReadLength <= 0) {
         return;
     }
     
-    NSUInteger respondLength = MIN(canReadLength, task.loadingRequest.dataRequest.requestedLength);
+    long long respondLength = MIN(canReadLength, task.loadingRequest.dataRequest.requestedLength);
     
     NSFileHandle * handle = [FileManager fileHandleForReadingAtPath:task.resource.cachePath];
     
     [handle seekToFileOffset:paddingOffset];
     
-    [task.loadingRequest.dataRequest respondWithData:[handle readDataOfLength:respondLength]];
+    [task.loadingRequest.dataRequest respondWithData:[handle readDataOfLength:[[NSNumber numberWithLongLong:respondLength] unsignedIntegerValue]]];
     
     [handle closeFile];
     
     //如果完全响应了所需要的数据，则完成
-    NSUInteger nowendOffset = requestedOffset + canReadLength;
-    NSUInteger reqEndOffset = task.loadingRequest.dataRequest.requestedOffset + task.loadingRequest.dataRequest.requestedLength;
+    long long nowendOffset = requestedOffset + canReadLength;
+    long long reqEndOffset = task.loadingRequest.dataRequest.requestedOffset + task.loadingRequest.dataRequest.requestedLength;
     if (nowendOffset >= reqEndOffset) {
         [task.loadingRequest finishLoading];
         

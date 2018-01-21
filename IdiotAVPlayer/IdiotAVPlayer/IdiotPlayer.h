@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
+#import "DownLoader.h"
 
 @class IdiotPlayer;
 
@@ -18,6 +20,18 @@ typedef NS_ENUM(NSInteger, IdiotPlayerState) {
     IdiotPlayerStateStopped,
     IdiotPlayerStateBuffering,
     IdiotPlayerStateError
+};
+
+typedef NS_ENUM(NSInteger, IdiotRemoteControlState) {
+    IdiotRemoteControlStatePlay = 0,
+    IdiotRemoteControlStatePause,
+    IdiotRemoteControlStatePre,
+    IdiotRemoteControlStateNext
+};
+
+typedef NS_ENUM(NSInteger, IdiotControlStyle) {
+    IdiotControlStyleEmbedded = 0,
+    IdiotControlStyleScreen //选择此项时 playerLayer = nil
 };
 
 @protocol IdiotPlayerDelegate <NSObject>
@@ -36,22 +50,36 @@ typedef NS_ENUM(NSInteger, IdiotPlayerState) {
 - (void)idiotAppDidInterrepted:(IdiotPlayer *__weak)idiotPlayer;
 - (void)idiotAppDidInterreptionEnded:(IdiotPlayer *__weak)idiotPlayer;
 
+- (void)idiotDurationAvailable:(IdiotPlayer *__weak)idiotPlayer;
+- (void)idiotRemoteControlReceivedWithEvent:(IdiotPlayer *__weak)idiotPlayer;
 @end
 
 @interface IdiotPlayer : NSObject
 
-@property(nonatomic , strong ,readonly) NSURL * currentUrl;
-@property(nonatomic , strong ,readonly) AVPlayer * player;
-@property(nonatomic , assign ,readonly) IdiotPlayerState playerState;
-@property(nonatomic , assign ,readonly) CGFloat progress;
-@property(nonatomic , weak) id<IdiotPlayerDelegate> delegate;
-@property(nonatomic , assign) CGFloat duration;
 
-- (instancetype)initWithUrl:(NSString *)url;
+@property(nonatomic , strong ,readonly) NSURL * currentUrl;
+/*if IdiotControlStyleEmbedded => playerLayer = nil*/
+@property(nonatomic , strong ,readonly) AVPlayerLayer * playerLayer;
+@property(nonatomic , strong ,readonly) AVPlayer * player;
+@property(nonatomic , assign ,readonly) CGFloat progress;
+@property(nonatomic ,             weak) id<IdiotPlayerDelegate> delegate;
+@property(nonatomic ,           assign) CGFloat duration;
+
+@property(nonatomic , assign ,readonly) IdiotPlayerState playerState;
+@property(nonatomic , assign ,readonly) IdiotRemoteControlState remoteControlState;
+@property(nonatomic ,           assign) IdiotControlStyle controlStyle;
+
++ (instancetype)sharedInstance;
+
+- (void)playWithUrl:(NSString *)url;
 
 - (void)play;
 - (void)pause;
+- (void)stop;
 - (void)seekToTime:(CGFloat)time;
-
+- (NSString *)formatTime:(CGFloat)time;
+- (double)currentTime;
 
 @end
+
+extern NSString *const IdiotRemoteControlEventNotification;

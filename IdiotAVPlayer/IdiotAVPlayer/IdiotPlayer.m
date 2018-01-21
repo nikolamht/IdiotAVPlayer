@@ -5,53 +5,83 @@
 //  Created by 老板 on 2017/12/31.
 //  Copyright © 2017年 mht. All rights reserved.
 //
-#import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>
 
 #import "IdiotPlayer.h"
 #import "ResourceLoader.h"
 #import "NSURL+IdiotURL.h"
 
+NSString *const IdiotRemoteControlEventNotification = @"IdiotRemoteControlEventNotification";
+
 @interface IdiotPlayer () <ResourceLoaderCacheProgressDelegate>
 
 @property(nonatomic , strong) NSURL * currentUrl;
+@property(nonatomic , strong) AVPlayerLayer * playerLayer;
 @property(nonatomic , strong) ResourceLoader * resourceLoader;
 @property(nonatomic , strong) dispatch_queue_t queue;
-@property(nonatomic , strong) AVURLAsset * playerAsset;
 @property(nonatomic , strong) AVPlayerItem * playerItem;
 @property(nonatomic , strong) AVPlayer * player;
 @property(nonatomic , assign) id timeObserver;
 @property(nonatomic , assign) CGFloat progress;
 
-@property(nonatomic , assign)IdiotPlayerState playerState;
+@property(nonatomic , assign) IdiotPlayerState playerState;
+@property(nonatomic , assign) IdiotRemoteControlState remoteControlState;
 @end
 
 @implementation IdiotPlayer
 
 #pragma mark -
-- (instancetype)initWithUrl:(NSString *)url {
+
++ (instancetype)sharedInstance {
+    
+    static dispatch_once_t onceToken;
+    static IdiotPlayer *instance;
+    
+    dispatch_once(&onceToken, ^{
+        instance = [[self alloc]init];
+    });
+    return instance;
+}
+
+- (instancetype)init{
     self = [super init];
     if (!self) { return nil; }
-    _currentUrl = [NSURL URLWithString:[url copy]];
-    [self setItem];
+    [self setup];
     return self;
 }
 
-- (void)setItem {
+- (void)playWithUrl:(NSString *)url {
+    _currentUrl = [NSURL URLWithString:[url copy]];
+    [self setItem];
+}
+
+- (void)setup {
+    if (!_queue) {
+        _queue = dispatch_queue_create("com.idiot.serial", DISPATCH_QUEUE_SERIAL);
+    }
+}
+
+- (void)setItem{
+    
+    [self releasePlayer];
     
     _resourceLoader = [[ResourceLoader alloc] init];
     _resourceLoader.delegate = self;
     
-    if (!_queue) {
-        _queue = dispatch_queue_create("com.idiot.serial", DISPATCH_QUEUE_SERIAL);
+    AVURLAsset * playerAsset = [AVURLAsset URLAssetWithURL:[_currentUrl idiotSchemeURL] options:nil];
+    [playerAsset.resourceLoader setDelegate:_resourceLoader queue:_queue];
+    
+    _playerItem = [AVPlayerItem playerItemWithAsset:playerAsset];
+    
+    if (_delegate&&[_delegate respondsToSelector:@selector(idiotDurationAvailable:)]) {
+        [_delegate idiotDurationAvailable:self];
     }
     
-    _playerAsset = [AVURLAsset URLAssetWithURL:[_currentUrl idiotSchemeURL] options:nil];
-    [_playerAsset.resourceLoader setDelegate:_resourceLoader queue:_queue];
-    
-    _playerItem = [AVPlayerItem playerItemWithAsset:_playerAsset];
-    
     _player = [AVPlayer playerWithPlayerItem:_playerItem];
+    
+    if (_controlStyle == IdiotControlStyleScreen) {
+        _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
+    }
     
     [self addObserver];
 }
@@ -59,7 +89,9 @@
 - (void)addObserver {
     
     _playerState = IdiotPlayerStateWaiting;
-    
+    if (_delegate&&[_delegate respondsToSelector:@selector(didIdiotStateChange:)]) {
+        [_delegate didIdiotStateChange:self];
+    }
     [_player addObserver:self forKeyPath:@"rate" options:NSKeyValueObservingOptionNew context:nil];
     
     //播放完成通知
@@ -80,6 +112,8 @@
     //中断事件
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidInterrepted:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackgroundControlStatus:) name:IdiotRemoteControlEventNotification object:nil];
+    
     [_playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
     [_playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
     [_playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew context:nil];
@@ -88,7 +122,7 @@
     
     //播放进度
     __weak typeof(self) weakself = self;
-    _timeObserver = [_player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 1.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+    _timeObserver = [_player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 20.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
         
         __strong typeof(weakself) strongself = weakself;
         
@@ -105,6 +139,31 @@
     
 }
 
+- (void)releasePlayer {
+    if (!self.playerItem) {
+        return;
+    }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if (_timeObserver) {
+        [_player removeTimeObserver:_timeObserver];
+        _timeObserver = nil;
+    }
+    [_playerItem removeObserver:self forKeyPath:@"status"];
+    [_playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [_playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
+    [_playerItem removeObserver:self forKeyPath:@"playbackBufferFull"];
+    [_playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+    [_player removeObserver:self forKeyPath:@"rate"];
+    [_player replaceCurrentItemWithPlayerItem:nil];
+    _player = nil;
+    _playerItem = nil;
+    if (self.resourceLoader) {
+        [self.resourceLoader stopResourceLoader];
+        self.resourceLoader = nil;
+    }
+}
+
 #pragma mark - control
 - (void)play{
     if (_player) {
@@ -116,6 +175,11 @@
     if (_player) {
         [_player pause];
     }
+}
+
+- (void)stop{
+    [self pause];
+    [self releasePlayer];
 }
 
 - (void)seekToTime:(CGFloat)time{
@@ -131,6 +195,10 @@
 }
 
 - (CGFloat)duration{
+    
+    if (!_playerItem) {
+        return 0;
+    }
     _duration = CMTimeGetSeconds(_playerItem.duration);
     return _duration;
 }
@@ -147,6 +215,11 @@
 }
 
 - (void)appWillResignActive {
+    
+    if (self.controlStyle == IdiotControlStyleScreen) {
+        [self pause];
+    }
+    
     DLogDebug(@"即将进入后台");
     if (_delegate&&[_delegate respondsToSelector:@selector(idiotAppWillResignActive:)]) {
         [_delegate idiotAppWillResignActive:self];
@@ -168,6 +241,12 @@
 }
 
 - (void)appDidBecomeActive {
+    
+    if (self.controlStyle == IdiotControlStyleScreen) {
+        [self play];
+        [[DownLoader share] resume];
+    }
+    
     DLogDebug(@"已经变为活动");
     if (_delegate&&[_delegate respondsToSelector:@selector(idiotAppDidBecomeActive:)]) {
         [_delegate idiotAppDidBecomeActive:self];
@@ -206,6 +285,43 @@
     Float64 durationSeconds = CMTimeGetSeconds(timeRange.duration);
     NSTimeInterval result = startSeconds + durationSeconds;// 计算缓冲总进度
     return result;
+}
+
+-(void)appDidEnterBackgroundControlStatus:(NSNotification *)notification
+{
+    
+    if (_controlStyle == IdiotControlStyleScreen) {
+        return;
+    }
+    
+    UIEvent * event = [notification object];
+    
+    if (event.type == UIEventTypeRemoteControl) {
+        switch (event.subtype) {
+            case UIEventSubtypeRemoteControlPause:
+                self.remoteControlState = IdiotRemoteControlStatePause;
+                break;
+            case UIEventSubtypeRemoteControlPreviousTrack:
+                self.remoteControlState = IdiotRemoteControlStatePre;
+                break;
+            case UIEventSubtypeRemoteControlNextTrack:
+                self.remoteControlState = IdiotRemoteControlStateNext;
+                break;
+            case UIEventSubtypeRemoteControlPlay:
+                self.remoteControlState = IdiotRemoteControlStatePlay;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+- (void)setRemoteControlState:(IdiotRemoteControlState)remoteControlState
+{
+    _remoteControlState = remoteControlState;
+    if ([self.delegate respondsToSelector:@selector(idiotRemoteControlReceivedWithEvent:)]) {
+        [self.delegate idiotRemoteControlReceivedWithEvent:self];
+    }
 }
 
 #pragma mark - observe
@@ -313,18 +429,21 @@
 
 #pragma mark - dealloc
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    if (_timeObserver) {
-        [_player removeTimeObserver:_timeObserver];
-        _timeObserver = nil;
+    [self releasePlayer];
+}
+
+- (NSString *)formatTime:(CGFloat)time
+{
+    long videocurrent = ceil(time);
+    
+    NSString *str = nil;
+    if (videocurrent < 3600) {
+        str =  [NSString stringWithFormat:@"%02li:%02li",lround(floor(videocurrent/60.f)),lround(floor(videocurrent/1.f))%60];
+    } else {
+        str =  [NSString stringWithFormat:@"%02li:%02li:%02li",lround(floor(videocurrent/3600.f)),lround(floor(videocurrent%3600)/60.f),lround(floor(videocurrent/1.f))%60];
     }
-    [_playerItem removeObserver:self forKeyPath:@"status"];
-    [_playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
-    [_playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
-    [_playerItem removeObserver:self forKeyPath:@"playbackBufferFull"];
-    [_playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
-    [_player removeObserver:self forKeyPath:@"rate"];
-    [_player replaceCurrentItemWithPlayerItem:nil];
+    
+    return str;
 }
 
 @end

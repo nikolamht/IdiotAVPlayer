@@ -27,5 +27,7 @@
 
 + (DownLoader *)share;
 - (void)start:(Resource *)task;
+- (void)cancel;
+- (void)resume;
 
 @end

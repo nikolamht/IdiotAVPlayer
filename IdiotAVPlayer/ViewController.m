@@ -6,6 +6,8 @@
 //  Copyright © 2017年 mht. All rights reserved.
 //
 #import <AVFoundation/AVFoundation.h>
+#import <MediaPlayer/MPNowPlayingInfoCenter.h>
+#import <MediaPlayer/MPMediaItem.h>
 
 #import "ViewController.h"
 #import "DownLoader.h"
@@ -31,13 +33,17 @@
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
-    myPlayer = [[IdiotPlayer alloc] initWithUrl:@"http://mirror.aarnet.edu.au/pub/TED-talks/911Mothers_2010W-480p.mp4"];
+    myPlayer = [[IdiotPlayer alloc] init];
+    myPlayer.controlStyle = IdiotControlStyleScreen;
     myPlayer.delegate = self;
-    AVPlayerLayer * playerLayer = [AVPlayerLayer playerLayerWithPlayer:myPlayer.player];
-    playerLayer.frame = self.view.bounds;
-    [self.view.layer addSublayer:playerLayer];
+    [myPlayer playWithUrl:@"http://mirror.aarnet.edu.au/pub/TED-talks/911Mothers_2010W-480p.mp4"];
     
-    [myPlayer.player play];
+    if (myPlayer.playerLayer) {
+        myPlayer.playerLayer.frame = self.view.bounds;
+        [self.view.layer addSublayer:myPlayer.playerLayer];
+    }
+    
+    [myPlayer play];
     
     slider = [[IdiotSlider alloc] initWithFrame:CGRectMake(15, 500, self.view.bounds.size.width-30, 15)];
     [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventTouchUpInside];
@@ -83,6 +89,43 @@
 {
     [slider setCaches:cacheList];
 }
+
+- (void)idiotAppDidEnterBackground:(IdiotPlayer *__weak)idiotPlayer
+{
+    NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+    [dict setObject:@"IdiotPlayer" forKey:MPMediaItemPropertyTitle];
+    [dict setObject:@"TED-talks"  forKey:MPMediaItemPropertyArtist];
+    [dict setObject:[NSNumber numberWithFloat:idiotPlayer.duration]  forKey:MPMediaItemPropertyPlaybackDuration];
+    [dict setObject:[NSNumber numberWithFloat:[idiotPlayer currentTime]]  forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
+}
+
+- (void)idiotRemoteControlReceivedWithEvent:(IdiotPlayer *__weak)idiotPlayer{
+    switch (idiotPlayer.remoteControlState) {
+        case IdiotRemoteControlStatePlay:
+        {
+            DLogInfo(@"播放");
+            [idiotPlayer play];
+        } break;
+        case IdiotRemoteControlStatePause:
+        {
+            DLogInfo(@"暂停");
+            [idiotPlayer pause];
+        } break;
+        case IdiotRemoteControlStatePre:
+        {
+            DLogInfo(@"上一首");
+        } break;
+        case IdiotRemoteControlStateNext:
+        {
+            DLogInfo(@"下一首");
+        } break;
+            
+        default:
+            break;
+    }
+}
+
 
 #pragma mark -
 - (void)didReceiveMemoryWarning {
