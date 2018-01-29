@@ -6,37 +6,37 @@
 ![效果图](https://github.com/nikolamht/IdiotAVPlayer/blob/master/preview/effect.png?raw=true)
 [这里有视频效果](http://t.cn/RQlUsyi?m=4198628275397043&u=3170976717)
 ## 简单使用
-
+```objective-c
 IdiotPlayer * myPlayer = [[IdiotPlayer alloc] init];
 myPlayer.controlStyle = IdiotControlStyleScreen;
 myPlayer.delegate = self;
 [myPlayer playWithUrl:@"http://mirror.aarnet.edu.au/pub/TED-talks/911Mothers_2010W-480p.mp4"];
 if (myPlayer.playerLayer) {
-myPlayer.playerLayer.frame = self.view.bounds;
-[self.view.layer addSublayer:myPlayer.playerLayer];
+    myPlayer.playerLayer.frame = self.view.bounds;
+    [self.view.layer addSublayer:myPlayer.playerLayer];
 }
 [myPlayer play];
-
+```
 ## Appdelegate设置
-
+```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-[IdiotDownLoader share];
-return YES;
+    [IdiotDownLoader share];
+    return YES;
 }
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier
 completionHandler:(void (^)())completionHandler
 {
-[IdiotDownLoader share].backgroundSessionCompletionHandler = completionHandler;
+    [IdiotDownLoader share].backgroundSessionCompletionHandler = completionHandler;
 }
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event
 {
-[[NSNotificationCenter defaultCenter]postNotificationName:IdiotRemoteControlEventNotification object:event];
+    [[NSNotificationCenter defaultCenter]postNotificationName:IdiotRemoteControlEventNotification object:event];
 }
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-[application beginReceivingRemoteControlEvents];
-[self becomeFirstResponder];
+    [application beginReceivingRemoteControlEvents];
+    [self becomeFirstResponder];
 }
-
+```
 ## 更多
 - -(void)didIdiotStateChange:(IdiotPlayer *__weak)idiotPlayer;
 - -(void)didIdiotProgressChange:(IdiotPlayer *__weak)idiotPlayer;
