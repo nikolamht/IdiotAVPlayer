@@ -1,3 +1,4 @@
+
 ## IdiotAVPlayer
 使用AVPlayer实现的可以分片缓存音视频的库
 后面会补上使用方法（其实大家看代码就能用起来），也会上传pod
@@ -15,6 +16,7 @@ myPlayer.playerLayer.frame = self.view.bounds;
 [self.view.layer addSublayer:myPlayer.playerLayer];
 }
 [myPlayer play];
+
 ## Appdelegate设置
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -52,12 +54,3 @@ completionHandler:(void (^)())completionHandler
 - -(void)idiotRemoteControlReceivedWithEvent:(IdiotPlayer *__weak)idiotPlayer;
 ## 原理图
 ![原理图](https://upload-images.jianshu.io/upload_images/9724987-5e2ca99d7359df7e.png)
-
-
-
-<<<<<<< HEAD
-=======
-![效果图](https://github.com/nikolamht/IdiotAVPlayer/blob/master/preview/effect.png?raw=true)
-
-视频地址http://t.cn/RQlUsyi?m=4198628275397043&u=3170976717
->>>>>>> origin/master
