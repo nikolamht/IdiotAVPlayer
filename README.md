@@ -6,3 +6,5 @@
 如果大家发现bug或者有好的建议请联系我1335304336@qq.com 邮箱号就是qq号
 
 ![效果图](https://github.com/nikolamht/IdiotAVPlayer/blob/master/preview/effect.png?raw=true)
+
+视频地址https://link.jianshu.com/?t=https%3A%2F%2Fweibo.com%2F3170976717%2FFFnLRmE15
