@@ -7,4 +7,4 @@
 
 ![效果图](https://github.com/nikolamht/IdiotAVPlayer/blob/master/preview/effect.png?raw=true)
 
-视频地址https://link.jianshu.com/?t=https%3A%2F%2Fweibo.com%2F3170976717%2FFFnLRmE15
+视频地址http://t.cn/RQlUsyi?m=4198628275397043&u=3170976717
