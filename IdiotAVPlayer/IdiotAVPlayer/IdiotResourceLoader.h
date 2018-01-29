@@ -16,7 +16,7 @@
 
 @end
 
-@interface ResourceLoader : NSObject <AVAssetResourceLoaderDelegate>
+@interface IdiotResourceLoader : NSObject <AVAssetResourceLoaderDelegate>
 
 @property(nonatomic , weak) id<ResourceLoaderCacheProgressDelegate> delegate;
 @property(nonatomic , assign) BOOL seek;

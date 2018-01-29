@@ -6,13 +6,13 @@
 //  Copyright © 2017年 mht. All rights reserved.
 //
 
-#import "FileManager.h"
-#import "Resource.h"
-#import "NSString+Md5.h"
+#import "IdiotFileManager.h"
+#import "IdiotResource.h"
+#import "NSString+IdiotUtil.h"
 
 static NSString * cachePath;
 
-@implementation FileManager
+@implementation IdiotFileManager
 
 + (NSError *)moveFileAtURL:(NSURL *)srcURL toPath:(NSString *)dstPath
 {
@@ -88,11 +88,11 @@ static NSString * cachePath;
 
 + (NSMutableArray *)getResourceWithUrl:(NSURL *)url {
     
-    NSString * cachePath = [FileManager getCacheDirectoryWithUrl:url];
+    NSString * cachePath = [IdiotFileManager getCacheDirectoryWithUrl:url];
     
     NSMutableArray * resourceArr = [[NSMutableArray alloc] init];
     
-    NSInteger fileLength = 0;
+    long long fileLength = 0;
     
     if (!cachePath) {
         return resourceArr;
@@ -117,7 +117,7 @@ static NSString * cachePath;
             
             NSString * key = [key_length firstObject];
             
-            Resource * local = [[Resource alloc] init];
+            IdiotResource * local = [[IdiotResource alloc] init];
             local.requestURL = url;
             local.requestOffset = [key longLongValue];
             local.fileLength = [[key_length lastObject] longLongValue];
@@ -126,7 +126,7 @@ static NSString * cachePath;
             }
             local.cachePath = filePath;
             local.cacheLength =  [[manager attributesOfItemAtPath:filePath error:nil]fileSize];
-            local.resourceType = ResourceTypeLocal;//本地资源
+            local.resourceType = IdiotResourceTypeLocal;//本地资源
             [resourceArr addObject:local];
         }
         
@@ -136,18 +136,18 @@ static NSString * cachePath;
         return resourceArr;
     }
     //排序合并
-    [resourceArr sortUsingComparator:^NSComparisonResult(Resource * _Nonnull obj1, Resource * _Nonnull obj2) {
+    [resourceArr sortUsingComparator:^NSComparisonResult(IdiotResource * _Nonnull obj1, IdiotResource * _Nonnull obj2) {
         NSComparisonResult result = [[NSNumber numberWithLongLong:obj1.requestOffset] compare:[NSNumber numberWithLongLong:obj2.requestOffset]];
         return result;
     }];
     
-    Resource * lastResource = nil;
+    IdiotResource * lastResource = nil;
     
     NSMutableArray * deleteResource = [[NSMutableArray alloc] init];
     
     NSMutableArray * addResource = [[NSMutableArray alloc] init];
     
-    for (Resource * resource in resourceArr) {
+    for (IdiotResource * resource in resourceArr) {
      
         @autoreleasepool {
             
@@ -172,7 +172,7 @@ static NSString * cachePath;
                     
                     [updateHandle seekToEndOfFile];
                     
-                    NSInteger seekOffset = lastResource.requestOffset+lastResource.cacheLength-resource.requestOffset;
+                    long long seekOffset = lastResource.requestOffset+lastResource.cacheLength-resource.requestOffset;
                     
                     [readHandle seekToFileOffset:seekOffset];
                     
@@ -195,13 +195,13 @@ static NSString * cachePath;
                 
                 if (resource.requestOffset > lastResource.requestOffset+lastResource.cacheLength) {
                     
-                    Resource * net = [[Resource alloc] init];
+                    IdiotResource * net = [[IdiotResource alloc] init];
                     net.requestURL = url;
                     net.requestOffset = lastResource.requestOffset+lastResource.cacheLength;
                     net.fileLength = fileLength;
                     net.cachePath = [[cachePath stringByAppendingString:@"/"] stringByAppendingString:[NSString stringWithFormat:@"%zd-%zd.idiot",net.requestOffset,fileLength]];
                     net.cacheLength = resource.requestOffset - net.requestOffset;
-                    net.resourceType = ResourceTypeNet;//网络资源
+                    net.resourceType = IdiotResourceTypeNet;//网络资源
                     
                     [addResource addObject:net];
                     
@@ -225,25 +225,25 @@ static NSString * cachePath;
     [resourceArr addObjectsFromArray:addResource];
     
     //排序
-    [resourceArr sortUsingComparator:^NSComparisonResult(Resource * _Nonnull obj1, Resource * _Nonnull obj2) {
+    [resourceArr sortUsingComparator:^NSComparisonResult(IdiotResource * _Nonnull obj1, IdiotResource * _Nonnull obj2) {
         NSComparisonResult result = [[NSNumber numberWithLongLong:obj1.requestOffset] compare:[NSNumber numberWithLongLong:obj2.requestOffset]];
         return result;
     }];
     
     //检查头
-    Resource * resource = nil;
+    IdiotResource * resource = nil;
     
     resource = [resourceArr firstObject];
     
     if (resource.requestOffset != 0) {
         
-        Resource * net = [[Resource alloc] init];
+        IdiotResource * net = [[IdiotResource alloc] init];
         net.requestURL = url;
         net.requestOffset = 0;
         net.fileLength = fileLength;
         net.cachePath = [[cachePath stringByAppendingString:@"/"] stringByAppendingString:[NSString stringWithFormat:@"0-%zd.idiot",fileLength]];
         net.cacheLength = resource.requestOffset;
-        net.resourceType = ResourceTypeNet;//网络资源
+        net.resourceType = IdiotResourceTypeNet;//网络资源
         
         [resourceArr insertObject:net atIndex:0];
     }
@@ -253,13 +253,13 @@ static NSString * cachePath;
     
     if (resource.requestOffset + resource.cacheLength < resource.fileLength) {
         
-        Resource * net = [[Resource alloc] init];
+        IdiotResource * net = [[IdiotResource alloc] init];
         net.requestURL = url;
         net.requestOffset = resource.requestOffset + resource.cacheLength;
         net.fileLength = fileLength;
         net.cachePath = [[cachePath stringByAppendingString:@"/"] stringByAppendingString:[NSString stringWithFormat:@"%zd-%zd.idiot",net.requestOffset,fileLength]];
         net.cacheLength = resource.fileLength-(resource.requestOffset+resource.cacheLength);
-        net.resourceType = ResourceTypeNet;//网络资源
+        net.resourceType = IdiotResourceTypeNet;//网络资源
         
         [resourceArr addObject:net];
     }
@@ -271,9 +271,9 @@ static NSString * cachePath;
     
     NSString * cacheFilePath = nil;
     
-    NSString * dirPath = [[[FileManager cacheDirectory] stringByAppendingString:@"/"] stringByAppendingString:[url.absoluteString MD5String]];
+    NSString * dirPath = [[[IdiotFileManager cacheDirectory] stringByAppendingString:@"/"] stringByAppendingString:[url.absoluteString IdiotMD5String]];
     
-    if (![FileManager createDirectory:dirPath]) {//创建文件夹成功
+    if (![IdiotFileManager createDirectory:dirPath]) {//创建文件夹成功
         cacheFilePath = [[dirPath stringByAppendingString:@"/"] stringByAppendingString:[NSString stringWithFormat:@"%@.idiot",name]];
         return cacheFilePath;
     }
@@ -283,7 +283,7 @@ static NSString * cachePath;
 
 + (NSString *)getCacheDirectoryWithUrl:(NSURL *)url {
     
-    NSString * dirPath = [[[FileManager cacheDirectory] stringByAppendingString:@"/"] stringByAppendingString:[url.absoluteString MD5String]];
+    NSString * dirPath = [[[IdiotFileManager cacheDirectory] stringByAppendingString:@"/"] stringByAppendingString:[url.absoluteString IdiotMD5String]];
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath]) {
         return nil;

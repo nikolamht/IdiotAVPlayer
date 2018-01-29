@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#import "DownLoader.h"
+
+#import "IdiotDownLoader.h"
 
 @class IdiotPlayer;
 
@@ -77,7 +78,6 @@ typedef NS_ENUM(NSInteger, IdiotControlStyle) {
 - (void)pause;
 - (void)stop;
 - (void)seekToTime:(CGFloat)time;
-- (NSString *)formatTime:(CGFloat)time;
 - (double)currentTime;
 
 @end

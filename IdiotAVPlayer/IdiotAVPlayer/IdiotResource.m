@@ -6,8 +6,8 @@
 //  Copyright © 2018年 mht. All rights reserved.
 //
 
-#import "Resource.h"
+#import "IdiotResource.h"
 
-@implementation Resource
+@implementation IdiotResource
 
 @end

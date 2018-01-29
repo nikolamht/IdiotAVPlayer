@@ -7,32 +7,31 @@
 //
 #import <AVFoundation/AVFoundation.h>
 
-#import "DownLoader.h"
-#import "FileManager.h"
-#import "NSString+Md5.h"
+#import "IdiotDownLoader.h"
+#import "IdiotFileManager.h"
 #import "NSURL+IdiotURL.h"
-#import "Resource.h"
+#import "IdiotResource.h"
 
 static NSString * IdiotBackgroundTaskId = @"IdiotBackgroundTaskId";
 static NSString * Content_Range = @"Content-Range";
 
-@interface DownLoader () <NSURLSessionDelegate>
+@interface IdiotDownLoader () <NSURLSessionDelegate>
 
 @property(nonatomic , strong) NSURLSession * session;
 @property(nonatomic , strong) NSOperationQueue * queue;
 @property(nonatomic , strong) NSMutableDictionary * taskDic;
 @property(nonatomic , strong) NSMutableArray * resources;
 @property(nonatomic ,   weak) NSURLSessionDataTask * currentDataTask;
-@property(nonatomic ,   weak) Resource * currentResource;
-@property(nonatomic ,   weak) Resource * currentTask;
+@property(nonatomic ,   weak) IdiotResource * currentResource;
+@property(nonatomic ,   weak) IdiotResource * currentTask;
 @property(   atomic , assign) BOOL writing;
 
 @end
 
-@implementation DownLoader
+@implementation IdiotDownLoader
 
 #pragma mark -
-+ (DownLoader *)share
++ (IdiotDownLoader *)share
 {
     static id sharedInstance = nil;
     static dispatch_once_t onceToken;
@@ -51,7 +50,7 @@ static NSString * Content_Range = @"Content-Range";
     return self;
 }
 
-- (void)start:(Resource *)task {
+- (void)start:(IdiotResource *)task {
     
     if (self.currentDataTask) {
         [self.currentDataTask cancel];
@@ -62,24 +61,24 @@ static NSString * Content_Range = @"Content-Range";
     //获取本地资源
     BOOL refresh = NO;
     while (!self.writing&&!refresh) {
-        self.resources = [FileManager getResourceWithUrl:task.requestURL];
+        self.resources = [IdiotFileManager getResourceWithUrl:task.requestURL];
         refresh = YES;
     }
     
-    Resource * resource = nil;//找出对应的资源
+    IdiotResource * resource = nil;//找出对应的资源
     
     if (!self.resources.count) {//本地无资源
-        resource = [[Resource alloc] init];
+        resource = [[IdiotResource alloc] init];
         resource.requestURL = task.requestURL;
         resource.requestOffset = task.requestOffset;
         resource.fileLength = task.fileLength;
         resource.cachePath = task.cachePath;
         resource.cacheLength = 0;
-        resource.resourceType = ResourceTypeNet;//网络资源
+        resource.resourceType = IdiotResourceTypeNet;//网络资源
         [self.resources addObject:resource];
     }else{//本地有资源
         
-        for (Resource * obj in self.resources) {
+        for (IdiotResource * obj in self.resources) {
             if (task.requestOffset >= obj.requestOffset&&
                 task.requestOffset < obj.requestOffset+obj.cacheLength) {
                 resource = obj;
@@ -88,17 +87,17 @@ static NSString * Content_Range = @"Content-Range";
         }
         
         if (task.requestOffset > resource.requestOffset&&
-            resource.resourceType == ResourceTypeNet) {
+            resource.resourceType == IdiotResourceTypeNet) {
             
             long long adjustCacheLength = task.requestOffset - resource.requestOffset;
             
-            Resource * net = [[Resource alloc] init];
+            IdiotResource * net = [[IdiotResource alloc] init];
             net.requestURL = task.requestURL;
             net.requestOffset = task.requestOffset;
             net.fileLength = task.fileLength;
             net.cachePath = task.cachePath;
             net.cacheLength = resource.cacheLength - adjustCacheLength;
-            net.resourceType = ResourceTypeNet;//网络资源
+            net.resourceType = IdiotResourceTypeNet;//网络资源
             
             resource.cacheLength = adjustCacheLength;
             
@@ -155,14 +154,14 @@ static NSString * Content_Range = @"Content-Range";
 }
 
 #pragma mark - 获取资源
-- (void)fetchDataWith:(Resource *)sliceRequest Resource:(Resource *)resource {
+- (void)fetchDataWith:(IdiotResource *)sliceRequest Resource:(IdiotResource *)resource {
     switch (resource.resourceType) {
-            case ResourceTypeNet:
+            case IdiotResourceTypeNet:
         {
             [self fetchFromNetwork:sliceRequest withResource:resource];
         } break;
             
-            case ResourceTypeLocal:
+            case IdiotResourceTypeLocal:
         {
             [self fetchFromLocal:sliceRequest withResource:resource];
         } break;
@@ -172,7 +171,7 @@ static NSString * Content_Range = @"Content-Range";
     }
 }
 
-- (void)fetchFromNetwork:(Resource *)task withResource:(Resource *)resource{
+- (void)fetchFromNetwork:(IdiotResource *)task withResource:(IdiotResource *)resource{
     
     NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[resource.requestURL originalSchemeURL] cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:10];
     if (resource.cacheLength > 0) {
@@ -187,7 +186,7 @@ static NSString * Content_Range = @"Content-Range";
     self.currentDataTask = datatask;
 }
 
-- (void)fetchFromLocal:(Resource *)sliceRequest withResource:(Resource *)resource{
+- (void)fetchFromLocal:(IdiotResource *)sliceRequest withResource:(IdiotResource *)resource{
     
     if (sliceRequest.requestOffset == resource.requestOffset) {
         
@@ -205,7 +204,7 @@ static NSString * Content_Range = @"Content-Range";
         return;
     }
     
-    NSFileHandle * readHandle = [FileManager fileHandleForReadingAtPath:resource.cachePath];
+    NSFileHandle * readHandle = [IdiotFileManager fileHandleForReadingAtPath:resource.cachePath];
     
     unsigned long long seekOffset = sliceRequest.requestOffset < resource.requestOffset?0:sliceRequest.requestOffset-resource.requestOffset;
     
@@ -236,17 +235,17 @@ static NSString * Content_Range = @"Content-Range";
     
 }
 
-- (void)didReceiveLocalData:(NSData *)data requestTask:(Resource *)task complete:(BOOL)complete {
+- (void)didReceiveLocalData:(NSData *)data requestTask:(IdiotResource *)task complete:(BOOL)complete {
     
     if (task.cancel) return;
     
     self.writing = YES;
     
     if (!task.cachePath.length && !task.cachePath) {
-        task.cachePath = [FileManager createSliceWithUrl:task.requestURL sliceName:[NSString stringWithFormat:@"%zd-%zd",task.requestOffset,task.fileLength]];
+        task.cachePath = [IdiotFileManager createSliceWithUrl:task.requestURL sliceName:[NSString stringWithFormat:@"%zd-%zd",task.requestOffset,task.fileLength]];
     }
     
-    NSFileHandle * handle = [FileManager fileHandleForWritingAtPath:task.cachePath];
+    NSFileHandle * handle = [IdiotFileManager fileHandleForWritingAtPath:task.cachePath];
     [handle seekToEndOfFile];
     [handle writeData:data];
     
@@ -264,7 +263,7 @@ static NSString * Content_Range = @"Content-Range";
     
 }
 
-- (void)willNextResource:(Resource *)task {
+- (void)willNextResource:(IdiotResource *)task {
     
     if (!self.resources.count||!_currentResource) {
         return;
@@ -276,7 +275,7 @@ static NSString * Content_Range = @"Content-Range";
         return;
     }
     
-    Resource * resource = [self.resources objectAtIndex:++index];
+    IdiotResource * resource = [self.resources objectAtIndex:++index];
     
     self.currentResource = resource;
     
@@ -287,7 +286,7 @@ static NSString * Content_Range = @"Content-Range";
 #pragma mark - NSURLSessionDataDelegate
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     
-    Resource * task = [self.taskDic objectForKey:dataTask.taskDescription];
+    IdiotResource * task = [self.taskDic objectForKey:dataTask.taskDescription];
     
     if (task.cancel) return;
     
@@ -303,7 +302,7 @@ static NSString * Content_Range = @"Content-Range";
     }
     
     if (!task.cachePath.length) {
-        task.cachePath = [FileManager createSliceWithUrl:task.requestURL sliceName:[NSString stringWithFormat:@"%lld-%lld",task.requestOffset,task.fileLength]];
+        task.cachePath = [IdiotFileManager createSliceWithUrl:task.requestURL sliceName:[NSString stringWithFormat:@"%lld-%lld",task.requestOffset,task.fileLength]];
     }
     
     if (self.currentResource.cacheLength <= 0) {
@@ -316,12 +315,12 @@ static NSString * Content_Range = @"Content-Range";
 //服务器返回数据 可能会调用多次
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
     
-    Resource * task = [self.taskDic objectForKey:dataTask.taskDescription];
+    IdiotResource * task = [self.taskDic objectForKey:dataTask.taskDescription];
     
     if (task.cancel) return;
     
     self.writing = YES;
-    NSFileHandle * handle = [FileManager fileHandleForWritingAtPath:task.cachePath];
+    NSFileHandle * handle = [IdiotFileManager fileHandleForWritingAtPath:task.cachePath];
     [handle seekToEndOfFile];
     [handle writeData:data];
     
@@ -340,7 +339,7 @@ static NSString * Content_Range = @"Content-Range";
 //请求完成会调用该方法，请求失败则error有值
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     
-    Resource * datatask = [self.taskDic objectForKey:task.taskDescription];
+    IdiotResource * datatask = [self.taskDic objectForKey:task.taskDescription];
     
     if (datatask.cancel) {
         DLogDebug(@"下载取消");

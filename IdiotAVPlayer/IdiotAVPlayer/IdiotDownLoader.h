@@ -8,25 +8,25 @@
 
 #import <Foundation/Foundation.h>
 
-@class Resource;
-@class DownLoader;
+@class IdiotResource;
+@class IdiotDownLoader;
 
 @protocol DownLoaderDataDelegate <NSObject>
 
 @required
 
-- (void)didReceiveData:(DownLoader * __weak)downLoader;
+- (void)didReceiveData:(IdiotDownLoader * __weak)downLoader;
 
 @end
 
-@interface DownLoader : NSObject
+@interface IdiotDownLoader : NSObject
 
 @property (nonatomic, copy)             void (^backgroundSessionCompletionHandler)();
 @property (nonatomic, weak)             id<DownLoaderDataDelegate> delegate;
 @property (nonatomic, strong, readonly) NSMutableArray * resources;
 
-+ (DownLoader *)share;
-- (void)start:(Resource *)task;
++ (IdiotDownLoader *)share;
+- (void)start:(IdiotResource *)task;
 - (void)cancel;
 - (void)resume;
 

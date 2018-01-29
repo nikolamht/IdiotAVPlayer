@@ -6,8 +6,8 @@
 //  Copyright © 2018年 mht. All rights reserved.
 //
 
-#import "ResourceTask.h"
+#import "IdiotResourceTask.h"
 
-@implementation ResourceTask
+@implementation IdiotResourceTask
 
 @end

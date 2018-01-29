@@ -8,7 +8,7 @@
 #import <UIKit/UIKit.h>
 
 #import "IdiotPlayer.h"
-#import "ResourceLoader.h"
+#import "IdiotResourceLoader.h"
 #import "NSURL+IdiotURL.h"
 
 NSString *const IdiotRemoteControlEventNotification = @"IdiotRemoteControlEventNotification";
@@ -17,7 +17,7 @@ NSString *const IdiotRemoteControlEventNotification = @"IdiotRemoteControlEventN
 
 @property(nonatomic , strong) NSURL * currentUrl;
 @property(nonatomic , strong) AVPlayerLayer * playerLayer;
-@property(nonatomic , strong) ResourceLoader * resourceLoader;
+@property(nonatomic , strong) IdiotResourceLoader * resourceLoader;
 @property(nonatomic , strong) dispatch_queue_t queue;
 @property(nonatomic , strong) AVPlayerItem * playerItem;
 @property(nonatomic , strong) AVPlayer * player;
@@ -65,7 +65,7 @@ NSString *const IdiotRemoteControlEventNotification = @"IdiotRemoteControlEventN
     
     [self releasePlayer];
     
-    _resourceLoader = [[ResourceLoader alloc] init];
+    _resourceLoader = [[IdiotResourceLoader alloc] init];
     _resourceLoader.delegate = self;
     
     AVURLAsset * playerAsset = [AVURLAsset URLAssetWithURL:[_currentUrl idiotSchemeURL] options:nil];
@@ -244,7 +244,7 @@ NSString *const IdiotRemoteControlEventNotification = @"IdiotRemoteControlEventN
     
     if (self.controlStyle == IdiotControlStyleScreen) {
         [self play];
-        [[DownLoader share] resume];
+        [[IdiotDownLoader share] resume];
     }
     
     DLogDebug(@"已经变为活动");
@@ -430,20 +430,6 @@ NSString *const IdiotRemoteControlEventNotification = @"IdiotRemoteControlEventN
 #pragma mark - dealloc
 - (void)dealloc {
     [self releasePlayer];
-}
-
-- (NSString *)formatTime:(CGFloat)time
-{
-    long videocurrent = ceil(time);
-    
-    NSString *str = nil;
-    if (videocurrent < 3600) {
-        str =  [NSString stringWithFormat:@"%02li:%02li",lround(floor(videocurrent/60.f)),lround(floor(videocurrent/1.f))%60];
-    } else {
-        str =  [NSString stringWithFormat:@"%02li:%02li:%02li",lround(floor(videocurrent/3600.f)),lround(floor(videocurrent%3600)/60.f),lround(floor(videocurrent/1.f))%60];
-    }
-    
-    return str;
 }
 
 @end

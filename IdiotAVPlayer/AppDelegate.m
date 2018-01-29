@@ -18,7 +18,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    [DownLoader share];
+    [IdiotDownLoader share];
     
     [DDLog addLogger:[DDTTYLogger sharedInstance]]; // TTY = Xcode console
     [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
@@ -34,7 +34,7 @@
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier
   completionHandler:(void (^)())completionHandler
 {
-    [DownLoader share].backgroundSessionCompletionHandler = completionHandler;
+    [IdiotDownLoader share].backgroundSessionCompletionHandler = completionHandler;
 }
 
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event

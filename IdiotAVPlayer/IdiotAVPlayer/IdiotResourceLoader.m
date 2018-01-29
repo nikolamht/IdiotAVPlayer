@@ -7,24 +7,24 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
-#import "ResourceLoader.h"
-#import "FileManager.h"
-#import "DownLoader.h"
+#import "IdiotResourceLoader.h"
+#import "IdiotFileManager.h"
+#import "IdiotDownLoader.h"
 #import "NSURL+IdiotURL.h"
-#import "Resource.h"
-#import "ResourceTask.h"
+#import "IdiotResource.h"
+#import "IdiotResourceTask.h"
 
-@interface ResourceLoader () <DownLoaderDataDelegate>
+@interface IdiotResourceLoader () <DownLoaderDataDelegate>
 {
     dispatch_semaphore_t semaphore;
 }
 @property (nonatomic, strong) NSMutableArray * taskList;
-@property (nonatomic,   weak) Resource * currentResource;
+@property (nonatomic,   weak) IdiotResource * currentResource;
 @property (nonatomic, strong) NSOperationQueue * playQueue;
 
 @end
 
-@implementation ResourceLoader
+@implementation IdiotResourceLoader
 
 
 - (instancetype)init{
@@ -59,9 +59,9 @@
     NSArray * temptaskList = [NSArray arrayWithArray:self.taskList];
     dispatch_semaphore_signal(semaphore);
     
-    ResourceTask * deleteTask = nil;
+    IdiotResourceTask * deleteTask = nil;
     
-    for (ResourceTask * task in temptaskList) {
+    for (IdiotResourceTask * task in temptaskList) {
         if ([task.loadingRequest isEqual:loadingRequest]) {
             deleteTask = task;
             break;
@@ -83,7 +83,7 @@
         if (loadingRequest.dataRequest.requestedOffset >= self.currentResource.requestOffset &&
             loadingRequest.dataRequest.requestedOffset <= self.currentResource.requestOffset + self.currentResource.cacheLength) {
             
-            ResourceTask * task = [[ResourceTask alloc] init];
+            IdiotResourceTask * task = [[IdiotResourceTask alloc] init];
             task.loadingRequest = loadingRequest;
             task.resource = self.currentResource;
             
@@ -98,7 +98,7 @@
                 [self newTaskWithLoadingRequest:loadingRequest];
             }else{
                 
-                ResourceTask * task = [[ResourceTask alloc] init];
+                IdiotResourceTask * task = [[IdiotResourceTask alloc] init];
                 task.loadingRequest = loadingRequest;
                 task.resource = self.currentResource;
                 
@@ -123,15 +123,15 @@
         self.currentResource.cancel = YES;
     }
     
-    Resource * resource = [[Resource alloc] init];
+    IdiotResource * resource = [[IdiotResource alloc] init];
     resource.requestURL = loadingRequest.request.URL;
     resource.requestOffset = loadingRequest.dataRequest.requestedOffset;
-    resource.resourceType = ResourceTypeTask;
+    resource.resourceType = IdiotResourceTypeTask;
     if (fileLength > 0) {
         resource.fileLength = fileLength;
     }
     
-    ResourceTask * task = [[ResourceTask alloc] init];
+    IdiotResourceTask * task = [[IdiotResourceTask alloc] init];
     task.loadingRequest = loadingRequest;
     task.resource = resource;
     
@@ -141,14 +141,14 @@
     [self.taskList addObject:task];
     dispatch_semaphore_signal(semaphore);
     
-    [DownLoader share].delegate = self;
-    [[DownLoader share] start:self.currentResource];
+    [IdiotDownLoader share].delegate = self;
+    [[IdiotDownLoader share] start:self.currentResource];
     
     self.seek = NO;
 }
 
 - (void)stopResourceLoader{
-    [[DownLoader share] cancel];
+    [[IdiotDownLoader share] cancel];
 }
 
 - (void)processRequestList {
@@ -158,7 +158,7 @@
         NSArray * temptaskList = [NSArray arrayWithArray:self.taskList];
         dispatch_semaphore_signal(semaphore);
         
-        for (ResourceTask * task in temptaskList) {
+        for (IdiotResourceTask * task in temptaskList) {
 
             NSInvocationOperation * invoke = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(finishLoadingWithLoadingRequest:) object:task];
             
@@ -169,7 +169,7 @@
     }
 }
 
-- (void)finishLoadingWithLoadingRequest:(ResourceTask *)task {
+- (void)finishLoadingWithLoadingRequest:(IdiotResourceTask *)task {
     
     //填充信息
     task.loadingRequest.contentInformationRequest.contentType = @"video/mp4";
@@ -201,7 +201,7 @@
     
     long long respondLength = MIN(canReadLength, task.loadingRequest.dataRequest.requestedLength);
     
-    NSFileHandle * handle = [FileManager fileHandleForReadingAtPath:task.resource.cachePath];
+    NSFileHandle * handle = [IdiotFileManager fileHandleForReadingAtPath:task.resource.cachePath];
     
     [handle seekToFileOffset:paddingOffset];
     
@@ -223,7 +223,7 @@
 }
 
 #pragma mark - DownLoaderDataDelegate
-- (void)didReceiveData:(DownLoader *__weak)downLoader{
+- (void)didReceiveData:(IdiotDownLoader *__weak)downLoader{
     
     [self processRequestList];
     

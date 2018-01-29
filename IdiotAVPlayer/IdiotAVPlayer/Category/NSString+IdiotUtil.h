@@ -8,7 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (ISNULLStr)
+@interface NSString (IdiotUtil)
 
-- (BOOL) isNullString;
+- (BOOL) IdiotIsNullString;
+
+- (NSString *) IdiotMD5String;
+
+- (NSString *) formatTime:(CGFloat)time;
+
 @end

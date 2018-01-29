@@ -8,7 +8,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "IdiotSlider.h"
-#import "Resource.h"
+#import "IdiotResource.h"
 
 @interface IdiotSlider ()
 {
@@ -67,18 +67,18 @@
         [loadedLayers removeAllObjects];
     }
     
-    Resource * task = nil;
+    IdiotResource * task = nil;
     
     for (NSInteger i = _caches.count - 1; i > 0; i--) {
         task = [_caches objectAtIndex:i];
-        if (task.resourceType == ResourceTypeTask) {
+        if (task.resourceType == IdiotResourceTypeTask) {
             break;
         }
     }
     
     CGFloat lastOffset = 0;
     
-    for (Resource * resource in _caches) {
+    for (IdiotResource * resource in _caches) {
         
         @autoreleasepool {
             
@@ -86,13 +86,13 @@
             
             CGFloat x = 0;
             
-            if (resource.cacheLength == 0||resource.resourceType == ResourceTypeTask) {
+            if (resource.cacheLength == 0||resource.resourceType == IdiotResourceTypeTask) {
                 continue;
             }
             
-            width = ceil(self.bounds.size.width*([[NSNumber numberWithUnsignedInteger:resource.cacheLength] floatValue]/[[NSNumber numberWithUnsignedInteger:resource.fileLength] floatValue]));
+            width = ceil(self.bounds.size.width*([[NSNumber numberWithLongLong:resource.cacheLength] floatValue]/[[NSNumber numberWithLongLong:resource.fileLength] floatValue]));
             
-            x = lastOffset == 0?ceil(self.bounds.size.width*([[NSNumber numberWithUnsignedInteger:resource.requestOffset] floatValue]/[[NSNumber numberWithUnsignedInteger:resource.fileLength] floatValue])):lastOffset;
+            x = lastOffset == 0?ceil(self.bounds.size.width*([[NSNumber numberWithLongLong:resource.requestOffset] floatValue]/[[NSNumber numberWithLongLong:resource.fileLength] floatValue])):lastOffset;
             
             lastOffset += width;
             
@@ -100,15 +100,15 @@
                 width -= lastOffset - self.bounds.size.width;
             }
             
-            if (resource.resourceType == ResourceTypeNet) {
+            if (resource.resourceType == IdiotResourceTypeNet) {
                 
-                NSInteger currentOffset = task.requestOffset + task.cacheLength;
+                long long currentOffset = task.requestOffset + task.cacheLength;
                 
                 if (resource.requestOffset >= task.requestOffset&&
                     resource.requestOffset <  currentOffset&&
                     currentOffset <  resource.requestOffset+resource.cacheLength) {
                     
-                    CGFloat scale = [[NSNumber numberWithUnsignedInteger:(currentOffset-resource.requestOffset)] floatValue]/[[NSNumber numberWithUnsignedInteger:(resource.cacheLength)] floatValue];
+                    CGFloat scale = [[NSNumber numberWithLongLong:(currentOffset-resource.requestOffset)] floatValue]/[[NSNumber numberWithLongLong:(resource.cacheLength)] floatValue];
                     
                     CGFloat currentWidth = ceil(width*scale);
                     width = MIN(currentWidth, width);
@@ -119,13 +119,13 @@
                 }else if (resource.requestOffset < task.requestOffset&&
                           currentOffset < resource.requestOffset+resource.cacheLength) {
                     
-                    NSUInteger offset = task.requestOffset - resource.requestOffset;
+                    long long offset = task.requestOffset - resource.requestOffset;
                     
-                    CGFloat offsetScale = [[NSNumber numberWithUnsignedInteger:offset] floatValue]/[[NSNumber numberWithUnsignedInteger:(resource.cacheLength)] floatValue];
+                    CGFloat offsetScale = [[NSNumber numberWithLongLong:offset] floatValue]/[[NSNumber numberWithLongLong:(resource.cacheLength)] floatValue];
                     
                     x += ceil(offsetScale*width);
                     
-                    CGFloat scale = [[NSNumber numberWithUnsignedInteger:(task.cacheLength)] floatValue]/[[NSNumber numberWithUnsignedInteger:(resource.cacheLength)] floatValue];
+                    CGFloat scale = [[NSNumber numberWithLongLong:(task.cacheLength)] floatValue]/[[NSNumber numberWithLongLong:(resource.cacheLength)] floatValue];
                     
                     CGFloat currentWidth = ceil(width*MIN(scale, 1-offsetScale));
                     width = MIN(currentWidth, width);

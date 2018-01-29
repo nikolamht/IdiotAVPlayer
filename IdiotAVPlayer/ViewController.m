@@ -10,11 +10,11 @@
 #import <MediaPlayer/MPMediaItem.h>
 
 #import "ViewController.h"
-#import "DownLoader.h"
-#import "ResourceLoader.h"
+#import "IdiotDownLoader.h"
+#import "IdiotResourceLoader.h"
 #import "IdiotPlayer.h"
 #import "IdiotSlider.h"
-#import "FileManager.h"
+#import "IdiotFileManager.h"
 
 
 @interface ViewController () <IdiotPlayerDelegate>

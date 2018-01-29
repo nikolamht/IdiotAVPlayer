@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @class AVAssetResourceLoadingRequest;
-@class Resource;
+@class IdiotResource;
 
-@interface ResourceTask : NSObject
+@interface IdiotResourceTask : NSObject
 
 @property(nonatomic , strong) AVAssetResourceLoadingRequest * loadingRequest;
-@property(nonatomic , strong) Resource * resource;
+@property(nonatomic , strong) IdiotResource * resource;
 
 @end

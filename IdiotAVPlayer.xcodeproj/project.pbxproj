@@ -7,7 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A71C0272003538700AB2ADE /* Resource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A71C0262003538700AB2ADE /* Resource.m */; };
+		1A657FB2201F0D47008A3AC4 /* IdiotDownLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A657FB1201F0D47008A3AC4 /* IdiotDownLoader.m */; };
+		1A657FBA201F0EF8008A3AC4 /* IdiotResourceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A657FB9201F0EF8008A3AC4 /* IdiotResourceLoader.m */; };
+		1A657FBD201F0FBF008A3AC4 /* IdiotResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A657FBC201F0FBF008A3AC4 /* IdiotResource.m */; };
+		1A657FC0201F1215008A3AC4 /* NSString+IdiotUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A657FBF201F1215008A3AC4 /* NSString+IdiotUtil.m */; };
+		1A657FC3201F1404008A3AC4 /* IdiotFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A657FC2201F1404008A3AC4 /* IdiotFileManager.m */; };
+		1A657FC6201F1554008A3AC4 /* IdiotResourceTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A657FC5201F1554008A3AC4 /* IdiotResourceTask.m */; };
 		1A8709DF1FF74E3400F5F10D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8709DE1FF74E3400F5F10D /* main.m */; };
 		1A8709E21FF74E3400F5F10D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8709E11FF74E3400F5F10D /* AppDelegate.m */; };
 		1A8709E51FF74E3400F5F10D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8709E41FF74E3400F5F10D /* ViewController.m */; };
@@ -16,15 +21,9 @@
 		1A8709ED1FF74E3400F5F10D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A8709EB1FF74E3400F5F10D /* LaunchScreen.storyboard */; };
 		1A8709F81FF74E3400F5F10D /* IdiotAVPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A8709F71FF74E3400F5F10D /* IdiotAVPlayerTests.m */; };
 		1A870A031FF74E3400F5F10D /* IdiotAVPlayerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A021FF74E3400F5F10D /* IdiotAVPlayerUITests.m */; };
-		1A870A251FF79FC200F5F10D /* DownLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A1E1FF79FC200F5F10D /* DownLoader.m */; };
-		1A870A261FF79FC200F5F10D /* FileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A201FF79FC200F5F10D /* FileManager.m */; };
-		1A870A271FF79FC200F5F10D /* ResourceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A221FF79FC200F5F10D /* ResourceLoader.m */; };
-		1A870A321FF8870400F5F10D /* NSString+ISNULLStr.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A2F1FF8870400F5F10D /* NSString+ISNULLStr.m */; };
-		1A870A331FF8870400F5F10D /* NSString+Md5.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A311FF8870400F5F10D /* NSString+Md5.m */; };
 		1A870A361FF88BE000F5F10D /* NSURL+IdiotURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A351FF88BE000F5F10D /* NSURL+IdiotURL.m */; };
 		1A870A391FF8B69B00F5F10D /* IdiotPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A381FF8B69B00F5F10D /* IdiotPlayer.m */; };
 		1A870A3C1FF8E5D800F5F10D /* IdiotSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A870A3B1FF8E5D800F5F10D /* IdiotSlider.m */; };
-		1AF31AEF2008948C00C7030D /* ResourceTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF31AEE2008948C00C7030D /* ResourceTask.m */; };
 		90BC0019C6D0E751D462873F /* libPods-IdiotAVPlayerUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E64A30F010DFE756E1D714C0 /* libPods-IdiotAVPlayerUITests.a */; };
 		D7A0E91804660BF6960E2F95 /* libPods-IdiotAVPlayerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4C253CDFEB7A7E4D8F05E7D /* libPods-IdiotAVPlayerTests.a */; };
 		F4143D55A293A0F86625FA7C /* libPods-IdiotAVPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C7C4ACBDE6F96CC53289A20 /* libPods-IdiotAVPlayer.a */; };
@@ -49,8 +48,18 @@
 
 /* Begin PBXFileReference section */
 		1A4298A8200DB07700A3D3E5 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
-		1A71C0252003538700AB2ADE /* Resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Resource.h; sourceTree = "<group>"; };
-		1A71C0262003538700AB2ADE /* Resource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Resource.m; sourceTree = "<group>"; };
+		1A657FB0201F0D47008A3AC4 /* IdiotDownLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdiotDownLoader.h; sourceTree = "<group>"; };
+		1A657FB1201F0D47008A3AC4 /* IdiotDownLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdiotDownLoader.m; sourceTree = "<group>"; };
+		1A657FB8201F0EF8008A3AC4 /* IdiotResourceLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdiotResourceLoader.h; sourceTree = "<group>"; };
+		1A657FB9201F0EF8008A3AC4 /* IdiotResourceLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdiotResourceLoader.m; sourceTree = "<group>"; };
+		1A657FBB201F0FBF008A3AC4 /* IdiotResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdiotResource.h; sourceTree = "<group>"; };
+		1A657FBC201F0FBF008A3AC4 /* IdiotResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdiotResource.m; sourceTree = "<group>"; };
+		1A657FBE201F1215008A3AC4 /* NSString+IdiotUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+IdiotUtil.h"; sourceTree = "<group>"; };
+		1A657FBF201F1215008A3AC4 /* NSString+IdiotUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+IdiotUtil.m"; sourceTree = "<group>"; };
+		1A657FC1201F1404008A3AC4 /* IdiotFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdiotFileManager.h; sourceTree = "<group>"; };
+		1A657FC2201F1404008A3AC4 /* IdiotFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdiotFileManager.m; sourceTree = "<group>"; };
+		1A657FC4201F1554008A3AC4 /* IdiotResourceTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdiotResourceTask.h; sourceTree = "<group>"; };
+		1A657FC5201F1554008A3AC4 /* IdiotResourceTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdiotResourceTask.m; sourceTree = "<group>"; };
 		1A8709DA1FF74E3400F5F10D /* IdiotAVPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IdiotAVPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A8709DE1FF74E3400F5F10D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1A8709E01FF74E3400F5F10D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -67,24 +76,12 @@
 		1A8709FE1FF74E3400F5F10D /* IdiotAVPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IdiotAVPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A870A021FF74E3400F5F10D /* IdiotAVPlayerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IdiotAVPlayerUITests.m; sourceTree = "<group>"; };
 		1A870A041FF74E3400F5F10D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1A870A1D1FF79FC200F5F10D /* DownLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownLoader.h; sourceTree = "<group>"; };
-		1A870A1E1FF79FC200F5F10D /* DownLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownLoader.m; sourceTree = "<group>"; };
-		1A870A1F1FF79FC200F5F10D /* FileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileManager.h; sourceTree = "<group>"; };
-		1A870A201FF79FC200F5F10D /* FileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileManager.m; sourceTree = "<group>"; };
-		1A870A211FF79FC200F5F10D /* ResourceLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceLoader.h; sourceTree = "<group>"; };
-		1A870A221FF79FC200F5F10D /* ResourceLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResourceLoader.m; sourceTree = "<group>"; };
-		1A870A2E1FF8870400F5F10D /* NSString+ISNULLStr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ISNULLStr.h"; sourceTree = "<group>"; };
-		1A870A2F1FF8870400F5F10D /* NSString+ISNULLStr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ISNULLStr.m"; sourceTree = "<group>"; };
-		1A870A301FF8870400F5F10D /* NSString+Md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Md5.h"; sourceTree = "<group>"; };
-		1A870A311FF8870400F5F10D /* NSString+Md5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Md5.m"; sourceTree = "<group>"; };
 		1A870A341FF88BE000F5F10D /* NSURL+IdiotURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+IdiotURL.h"; sourceTree = "<group>"; };
 		1A870A351FF88BE000F5F10D /* NSURL+IdiotURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+IdiotURL.m"; sourceTree = "<group>"; };
 		1A870A371FF8B69B00F5F10D /* IdiotPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdiotPlayer.h; sourceTree = "<group>"; };
 		1A870A381FF8B69B00F5F10D /* IdiotPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdiotPlayer.m; sourceTree = "<group>"; };
 		1A870A3A1FF8E5D800F5F10D /* IdiotSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdiotSlider.h; sourceTree = "<group>"; };
 		1A870A3B1FF8E5D800F5F10D /* IdiotSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IdiotSlider.m; sourceTree = "<group>"; };
-		1AF31AED2008948C00C7030D /* ResourceTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceTask.h; sourceTree = "<group>"; };
-		1AF31AEE2008948C00C7030D /* ResourceTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResourceTask.m; sourceTree = "<group>"; };
 		3C7C4ACBDE6F96CC53289A20 /* libPods-IdiotAVPlayer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IdiotAVPlayer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DAC18E2B10271A7FF37A736 /* Pods-IdiotAVPlayerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IdiotAVPlayerUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IdiotAVPlayerUITests/Pods-IdiotAVPlayerUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		628093C0910BBEEEC824AE3E /* Pods-IdiotAVPlayer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IdiotAVPlayer.release.xcconfig"; path = "Pods/Target Support Files/Pods-IdiotAVPlayer/Pods-IdiotAVPlayer.release.xcconfig"; sourceTree = "<group>"; };
@@ -195,16 +192,16 @@
 			children = (
 				1A870A371FF8B69B00F5F10D /* IdiotPlayer.h */,
 				1A870A381FF8B69B00F5F10D /* IdiotPlayer.m */,
-				1A870A1D1FF79FC200F5F10D /* DownLoader.h */,
-				1A870A1E1FF79FC200F5F10D /* DownLoader.m */,
-				1A870A211FF79FC200F5F10D /* ResourceLoader.h */,
-				1A870A221FF79FC200F5F10D /* ResourceLoader.m */,
-				1A71C0252003538700AB2ADE /* Resource.h */,
-				1A71C0262003538700AB2ADE /* Resource.m */,
-				1AF31AED2008948C00C7030D /* ResourceTask.h */,
-				1AF31AEE2008948C00C7030D /* ResourceTask.m */,
-				1A870A1F1FF79FC200F5F10D /* FileManager.h */,
-				1A870A201FF79FC200F5F10D /* FileManager.m */,
+				1A657FB0201F0D47008A3AC4 /* IdiotDownLoader.h */,
+				1A657FB1201F0D47008A3AC4 /* IdiotDownLoader.m */,
+				1A657FB8201F0EF8008A3AC4 /* IdiotResourceLoader.h */,
+				1A657FB9201F0EF8008A3AC4 /* IdiotResourceLoader.m */,
+				1A657FBB201F0FBF008A3AC4 /* IdiotResource.h */,
+				1A657FBC201F0FBF008A3AC4 /* IdiotResource.m */,
+				1A657FC4201F1554008A3AC4 /* IdiotResourceTask.h */,
+				1A657FC5201F1554008A3AC4 /* IdiotResourceTask.m */,
+				1A657FC1201F1404008A3AC4 /* IdiotFileManager.h */,
+				1A657FC2201F1404008A3AC4 /* IdiotFileManager.m */,
 				1A870A3A1FF8E5D800F5F10D /* IdiotSlider.h */,
 				1A870A3B1FF8E5D800F5F10D /* IdiotSlider.m */,
 				1A870A2D1FF8870400F5F10D /* Category */,
@@ -215,12 +212,10 @@
 		1A870A2D1FF8870400F5F10D /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				1A657FBE201F1215008A3AC4 /* NSString+IdiotUtil.h */,
+				1A657FBF201F1215008A3AC4 /* NSString+IdiotUtil.m */,
 				1A870A341FF88BE000F5F10D /* NSURL+IdiotURL.h */,
 				1A870A351FF88BE000F5F10D /* NSURL+IdiotURL.m */,
-				1A870A2E1FF8870400F5F10D /* NSString+ISNULLStr.h */,
-				1A870A2F1FF8870400F5F10D /* NSString+ISNULLStr.m */,
-				1A870A301FF8870400F5F10D /* NSString+Md5.h */,
-				1A870A311FF8870400F5F10D /* NSString+Md5.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -531,19 +526,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A870A271FF79FC200F5F10D /* ResourceLoader.m in Sources */,
-				1AF31AEF2008948C00C7030D /* ResourceTask.m in Sources */,
+				1A657FC0201F1215008A3AC4 /* NSString+IdiotUtil.m in Sources */,
 				1A8709E51FF74E3400F5F10D /* ViewController.m in Sources */,
+				1A657FC6201F1554008A3AC4 /* IdiotResourceTask.m in Sources */,
 				1A870A391FF8B69B00F5F10D /* IdiotPlayer.m in Sources */,
-				1A870A321FF8870400F5F10D /* NSString+ISNULLStr.m in Sources */,
+				1A657FBA201F0EF8008A3AC4 /* IdiotResourceLoader.m in Sources */,
 				1A8709E21FF74E3400F5F10D /* AppDelegate.m in Sources */,
-				1A71C0272003538700AB2ADE /* Resource.m in Sources */,
 				1A870A361FF88BE000F5F10D /* NSURL+IdiotURL.m in Sources */,
-				1A870A331FF8870400F5F10D /* NSString+Md5.m in Sources */,
+				1A657FB2201F0D47008A3AC4 /* IdiotDownLoader.m in Sources */,
 				1A870A3C1FF8E5D800F5F10D /* IdiotSlider.m in Sources */,
-				1A870A251FF79FC200F5F10D /* DownLoader.m in Sources */,
-				1A870A261FF79FC200F5F10D /* FileManager.m in Sources */,
+				1A657FC3201F1404008A3AC4 /* IdiotFileManager.m in Sources */,
 				1A8709DF1FF74E3400F5F10D /* main.m in Sources */,
+				1A657FBD201F0FBF008A3AC4 /* IdiotResource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
